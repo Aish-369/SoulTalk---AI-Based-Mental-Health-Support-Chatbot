@@ -1,0 +1,6 @@
+{
+  "name": "SoulTalk",
+  "description": "A premium AI-powered emotional wellness companion designed to create a calm, supportive, and hopeful space. Listen, reflect, and grow.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
