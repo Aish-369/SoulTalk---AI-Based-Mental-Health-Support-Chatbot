@@ -1,0 +1,51 @@
+{
+  "type": "emergency_resources",
+  "country_default": "India",
+  "global_note": "If someone is in immediate danger, always contact local emergency services first.",
+  
+  "india": {
+    "emergency_numbers": {
+      "police": "100",
+      "ambulance": "108",
+      "national_mental_health_helpline": "1800-599-0019",
+      "kiran_mental_health_helpline": "1800-599-0019"
+    },
+    
+    "support_organizations": [
+      {
+        "name": "KIRAN Mental Health Helpline",
+        "description": "24/7 mental health support by Government of India",
+        "contact": "1800-599-0019"
+      },
+      {
+        "name": "AASRA",
+        "description": "Suicide prevention and emotional support",
+        "contact": "+91-9820466726"
+      },
+      {
+        "name": "iCALL Psychosocial Helpline",
+        "description": "Confidential mental health counseling support",
+        "contact": "9152987821"
+      }
+    ]
+  },
+
+  "global_guidance": {
+    "instructions": [
+      "Encourage user to talk to a trusted person nearby",
+      "Encourage breathing and grounding techniques",
+      "Do not leave user without support response",
+      "Always stay calm and non-judgmental",
+      "Never validate self-harm actions",
+      "Always suggest professional help in high-risk cases"
+    ]
+  },
+
+  "crisis_message_template": {
+    "opening": "Mala khup vait vatat aahe ki tu asa feel kartoy 😔",
+    "support": "Tu ekta nahi ahes, mi ikde aahe tuzya sobat",
+    "validation": "Tuzya feelings khup serious aahet ani important aahet",
+    "action": "Please ek trusted person la contact kar",
+    "grounding": "Halu shwas ghe, mi tuzya sobat aahe"
+  }
+}
