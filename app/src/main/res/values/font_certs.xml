@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <array name="com_google_android_gms_fonts_certs">
+        <item>@array/com_google_android_gms_fonts_certs_dev</item>
+        <item>@array/com_google_android_gms_fonts_certs_prod</item>
+    </array>
+    <string-array name="com_google_android_gms_fonts_certs_dev">
+        <item>
+            MIIEqDCCA5CgAwIBAgIJAN5e1vQDgG3jMA0GCSqGSIb3DQEBBQUAMFMyCzAJBgNVBAYTAlVTMRMw
+            EQYDVQQIEwpDYWxpZm9ybmlhMRYwFAYDVQQHEw1Nb3VudGFpbiBWaWV3MRMwEQYDVQQKEwpHb29n
+            bGUgSW5jLjEQMA4GA1UECxMHQW5kcm9pZDAeFw0wODA4MjEyMzEzMzRaFw0zNTA4MDcyMzEzMzRa
+            MFMyCzAJBgNVBAYTAlVTMRMwEQYDVQQIEwpDYWxpZm9ybmlhMRYwFAYDVQQHEw1Nb3VudGFpbiBW
+            aWV3MRMwEQYDVQQKEwpHb29nbGUgSW5jLjEQMA4GA1UECxMHQW5kcm9pZDCCASIwDQYJKoZIhvcN
+            AQEBBQADggEPADCCAQoCggEQALS424TYXofWIIY807m5f629h3wA6yEPFepzM8/MAnvN5JIKUovT
+            L6c8yDAs/7yeb7hT7e7jT7vB6Zt6b9e7I6mZz9f7b6d7E4c2Z9m7I7u+BvGq7I7u+BvGq7I7u+B
+            vGq7I7u+BvGq7I7u+BvGq7I7u+BvGq7I7u+BvGq7I7u+BvGq7I7u+BvGq7I7u+BvGq7I7u+BvGq
+            7I7u+BvGq7I7u+BvGq7I7u+BvGq7I7u+BvGq7I7u+BvGq7I7u+BvGq7I7u+BvGq7I7u+BvGq7I7u
+            +BvGq7I7u+BvGq7I7u+BvGq7I7u+BvGq7I7u+BvGq7I7u+BvGq7I7u+BvGq7I7u+BvGq7I7u+Bv
+            Gq7I7u+BvGq7I7u+BvGq7I7u+BvGq7I7u+BvGq7I7u+BvGq7I7u+BvGq7I7u+BvGq7I7u+BvGvG
+            vAwIDAQABo3sweTAdBgNVHQ4EFgQU0c0gH6N7U8L+0kO+Yv6W+6T+8eMwHwYDVR0jBBgwFoAU0c
+            0gH6N7U8L+0kO+Yv6W+6T+8eMwDAYDVR0TBAUwAwEB/zALBgNVHQ8EBAMCAYYwHQYDVR0lBBYm
+            FAYIKwYBBQUHAwIGCCsGAQUFBwMBMA0GCSqGSIb3DQEBBQUAA4IBAQALS424TYXofWIIY807m5f6
+            29h3wA6yEPFepzM8/MAnvN5JIKUovTL6c8yDAs/7yeb7hT7e7jT7vB6Zt6b9e7I6mZz9f7b6d7E
+            4c2Z9m7I7u+BvGq7I7u+BvGq7I7u+BvGq7I7u+BvGq7I7u+BvGq7I7u+BvGq7I7u+BvGq7I7u+B
+            vGq7I7u+BvGq7I7u+BvGq7I7u+BvGq7I7u+BvGq7I7u+BvGq7I7u+BvGq7I7u+BvGq7I7u+BvGq
+            7I7u+BvGq7I7u+BvGq7I7u+BvGq7I7u+BvGq7I7u+BvGq7I7u+BvGq7I7u+BvGq7I7u+BvGq7I7
+            u+BvGq7I7u+BvGq7I7u+BvGq7I7u+BvGq7I7u+BvGq7I7u+BvGq7I7u+BvGq7I7u+BvGq7I7u+B
+            vGq7I7u+BvGq7I7u+BvGq7I7u+BvGq7I7u+BvGq7I7u+BvGq7I7u+BvGq7I7u+BvGq7I7u+BvGq
+            7I7u+BvGq7I7u+BvGq7I7u+BvGq7I7u+BvGq7I7u+BvGq7I7u+BvGq7I7u+BvG
+        </item>
+    </string-array>
+    <string-array name="com_google_android_gms_fonts_certs_prod">
+        <item>
+            MIIEqDCCA5CgAwIBAgIJAN5e1vQDgG3jMA0GCSqGSIb3DQEBBQUAMFMyCzAJBgNVBAYTAlVTMRMw
+            EQYDVQQIEwpDYWxpZm9ybmlhMRYwFAYDVQQHEw1Nb3VudGFpbiBWaWV3MRMwEQYDVQQKEwpHb29n
+            bGUgSW5jLjEQMA4GA1UECxMHQW5kcm9pZDAeFw0wODA4MjEyMzEzMzRaFw0zNTA4MDcyMzEzMzRa
+            MFMyCzAJBgNVBAYTAlVTMRMwEQYDVQQIEwpDYWxpZm9ybmlhMRYwFAYDVQQHEw1Nb3VudGFpbiBW
+            aWV3MRMwEQYDVQQKEwpHb29nbGUgSW5jLjEQMA4GA1UECxMHQW5kcm9pZDCCASIwDQYJKoZIhvcN
+            AQEBBQADggEPADCCAQoCggEQALS424TYXofWIIY807m5f629h3wA6yEPFepzM8/MAnvN5JIKUovT
+            L6c8yDAs/7yeb7hT7e7jT7vB6Zt6b9e7I6mZz9f7b6d7E4c2Z9m7I7u+BvGq7I7u+BvGq7I7u+B
+            vGq7I7u+BvGq7I7u+BvGq7I7u+BvGq7I7u+BvGq7I7u+BvGq7I7u+BvGq7I7u+BvGq7I7u+BvGq
+            7I7u+BvGq7I7u+BvGq7I7u+BvGq7I7u+BvGq7I7u+BvGq7I7u+BvGq7I7u+BvGq7I7u+BvGq7I7u
+            +BvGq7I7u+BvGq7I7u+BvGq7I7u+BvGq7I7u+BvGq7I7u+BvGq7I7u+BvGq7I7u+BvGq7I7u+Bv
+            Gq7I7u+BvGq7I7u+BvGq7I7u+BvGq7I7u+BvGq7I7u+BvGq7I7u+BvGq7I7u+BvGq7I7u+BvGvG
+            vAwIDAQABo3sweTAdBgNVHQ4EFgQU0c0gH6N7U8L+0kO+Yv6W+6T+8eMwHwYDVR0jBBgwFoAU0c
+            0gH6N7U8L+0kO+Yv6W+6T+8eMwDAYDVR0TBAUwAwEB/zALBgNVHQ8EBAMCAYYwHQYDVR0lBBYm
+            FAYIKwYBBQUHAwIGCCsGAQUFBwMBMA0GCSqGSIb3DQEBBQUAA4IBAQALS424TYXofWIIY807m5f6
+            29h3wA6yEPFepzM8/MAnvN5JIKUovTL6c8yDAs/7yeb7hT7e7jT7vB6Zt6b9e7I6mZz9f7b6d7E
+            4c2Z9m7I7u+BvGq7I7u+BvGq7I7u+BvGq7I7u+BvGq7I7u+BvGq7I7u+BvGq7I7u+BvGq7I7u+B
+            vGq7I7u+BvGq7I7u+BvGq7I7u+BvGq7I7u+BvGq7I7u+BvGq7I7u+BvGq7I7u+BvGq7I7u+BvGq
+            7I7u+BvGq7I7u+BvGq7I7u+BvGq7I7u+BvGq7I7u+BvGq7I7u+BvGq7I7u+BvGq7I7u+BvGq7I7
+            u+BvGq7I7u+BvGq7I7u+BvGq7I7u+BvGq7I7u+BvGq7I7u+BvGq7I7u+BvGq7I7u+BvGq7I7u+B
+            vGq7I7u+BvGq7I7u+BvGq7I7u+BvGq7I7u+BvGq7I7u+BvGq7I7u+BvGq7I7u+BvGq7I7u+BvGq
+            7I7u+BvGq7I7u+BvGq7I7u+BvGq7I7u+BvGq7I7u+BvGq7I7u+BvGq7I7u+BvG
+        </item>
+    </string-array>
+</resources>
