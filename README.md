@@ -66,7 +66,7 @@ The main vision behind SoulTalk is to make emotional support more accessible usi
 1. Clone the repository
 
 ```bash
-git clone https://github.com/yourusername/SoulTalk.git
+git clone https://github.com/Aish-369/SoulTalk---AI-Based-Mental-Health-Support-Chatbot.git
 ```
 
 2. Open the project in Android Studio
