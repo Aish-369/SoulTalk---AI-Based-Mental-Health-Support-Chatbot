@@ -82,9 +82,9 @@ fun SoulTalkLoginSignupScreen(onAuthSucceeded: () -> Unit) {
 
   // Credentials and visual state triggers
   var isRegisterMode by remember { mutableStateOf(false) }
-  var nameInput by remember { mutableStateOf("Aishwarya Pawar") } // Preset friendly default name
-  var emailInput by remember { mutableStateOf("aishpawar369@gmail.com") } // Preset metadata email for delightful defaults
-  var passwordInput by remember { mutableStateOf("soultalk_secure") }
+  var nameInput by remember { mutableStateOf("") }
+var emailInput by remember { mutableStateOf("") }
+var passwordInput by remember { mutableStateOf("") }
   var isPasswordVisible by remember { mutableStateOf(false) }
   var isAuthenticating by remember { mutableStateOf(false) }
   var authErrorMessage by remember { mutableStateOf("") }
@@ -218,9 +218,9 @@ fun SoulTalkLoginSignupScreen(onAuthSucceeded: () -> Unit) {
         ) {
           SpeechBubble(
             text = if (isRegisterMode) {
-              "Hi Aishwarya 👋 Let's connect you securely so your $companionName stays with you forever!"
+              "Hi there 👋 Let's connect you securely..."
             } else {
-              "Hi Aishwarya 👋 I'm excited to start this journey with you."
+              "Welcome back 👋 I'm excited to start this journey with you."
             }
           )
         }
@@ -360,7 +360,12 @@ fun SoulTalkLoginSignupScreen(onAuthSucceeded: () -> Unit) {
                 .fillMaxWidth()
                 .padding(bottom = 16.dp)
                 .testTag("full_name_input"),
-              placeholder = { Text("E.g. Aishwarya Pawar", color = SoftSlate.copy(alpha = 0.6f)) },
+              placeholder = {
+    Text(
+        "E.g. Aishwarya",
+        color = SoftSlate.copy(alpha = 0.6f)
+    )
+}
               shape = RoundedCornerShape(16.dp),
               colors = OutlinedTextFieldDefaults.colors(
                 focusedBorderColor = SageGreen,
