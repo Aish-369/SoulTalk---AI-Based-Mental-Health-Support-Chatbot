@@ -92,10 +92,16 @@ fun SoulTalkApp() {
       }
       ScreenState.Onboarding -> {
         SoulTalkOnboardingScreen(onOnboardingFinished = {
-          currentScreen = ScreenState.CompanionSelection
+          // Auto-initialize Wolfie and skip companion selection
+          LaunchedEffect(Unit) {
+            repository.initializeWolfie("Wolfie")
+            currentScreen = ScreenState.LoginSignup
+          }
         })
       }
       ScreenState.CompanionSelection -> {
+        // Deprecated: CompanionSelectionScreen is no longer used
+        // Wolfie is automatically initialized after onboarding
         SoulTalkCompanionSelectionScreen(onCompanionSaved = {
           currentScreen = ScreenState.LoginSignup
         })

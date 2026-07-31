@@ -60,10 +60,10 @@ fun SoulTalkCompanionChatScreen(
   var chatMessages by remember { mutableStateOf<List<ChatMessageDto>>(emptyList()) }
   var isLoadingHistory by remember { mutableStateOf(true) }
 
-  // Character metadata custom state (Syncing from FastAPI context)
-  var companionName by remember { mutableStateOf("Mochi") }
-  var companionType by remember { mutableStateOf("mochi_cat") }
-  var personalityType by remember { mutableStateOf("Calm, Friendly, Comforting") }
+  // Character metadata custom state (Wolfie is the sole companion)
+  var companionName by remember { mutableStateOf("Wolfie") }
+  var companionType by remember { mutableStateOf("wolfie") }
+  var personalityType by remember { mutableStateOf("Emotionally Intelligent, Wise, Compassionate") }
   var emotionalTrends by remember { mutableStateOf<List<String>>(listOf("neutral")) }
 
   // UI state variables
@@ -443,7 +443,7 @@ fun SoulTalkCompanionChatScreen(
           }
         }
 
-        // ──────────────────────────────────────────────
+        // ───────────────────────────────────��──────────
         // QUICK ACTIONS CARDS
         // ──────────────────────────────────────────────
         Row(

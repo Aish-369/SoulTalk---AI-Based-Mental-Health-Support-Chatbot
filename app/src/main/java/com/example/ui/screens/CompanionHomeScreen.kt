@@ -32,6 +32,7 @@ import com.example.data.database.CompanionProgressEntity
 import com.example.data.database.UserEntity
 import com.example.data.repository.CompanionRepository
 import com.example.ui.theme.*
+import com.example.ui.theme.WolfieVoiceLines
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
@@ -164,7 +165,7 @@ fun CompanionHomeScreen(
   var showLevelUpCelebration by remember { mutableStateOf(false) }
   var showThemeSelector by remember { mutableStateOf(false) }
   var showCustomization by remember { mutableStateOf(false) }
-  var companionMessage by remember { mutableStateOf("I'm so happy to see you! Let's grow together today.") }
+  var companionMessage by remember { mutableStateOf("Welcome back. I'm so glad to see you. What's on your mind today?") }
   var companionReaction by remember { mutableStateOf<CompanionReaction?>(null) }
   
   // Load data
@@ -1806,34 +1807,34 @@ fun generateCustomizationItems(currentLevel: Int): List<CustomizationItem> {
 fun updateCompanionDialogue(
   progress: CompanionProgressEntity?,
   user: UserEntity?
-): String? {
+  ): String? {
   val level = progress?.level ?: 1
   val hour = Calendar.getInstance().get(Calendar.HOUR_OF_DAY)
   
+  // Use Wolfie's personality-driven voice lines
   val timeBasedGreeting = when (hour) {
-    in 5..11 -> "Good morning! "
-    in 12..16 -> "Good afternoon! "
-    in 17..20 -> "Good evening! "
-    else -> "Good night! "
+    in 5..11 -> WolfieVoiceLines.morningGreetings.random()
+    in 17..20 -> WolfieVoiceLines.eveningGreetings.random()
+    else -> "I'm here with you, always."
   }
   
   val levelBasedMessage = when {
     level >= 5 -> "You've become such a wise soul. I'm honored to be your guardian."
     level >= 3 -> "I've noticed how much you've grown. Your emotional awareness is beautiful."
-    level >= 2 -> "We're building something special together. Keep going!"
-    else -> "Every step counts, and I'm here with you for each one."
+    level >= 2 -> "We're building something special together. Keep growing."
+    else -> "Every moment of reflection matters. You're already becoming more aware."
   }
   
   val activityBasedMessages = listOf(
-    "I noticed you've been journaling more. Your thoughts are becoming clearer.",
-    "You handled a difficult week really well. I'm proud of you.",
-    "Let's keep growing together. The journey matters more than the destination.",
-    "Your consistency inspires me. Let's maintain this momentum.",
-    "Remember to be kind to yourself today. You deserve it."
+    "I see how you're taking care of yourself. That takes real courage.",
+    "Your willingness to feel deeply shows real strength.",
+    "The work you're doing here is important. I believe in you.",
+    "You're showing up for yourself. That matters more than you know.",
+    "Remember to be kind to yourself today. You deserve that compassion."
   )
   
-  return timeBasedGreeting + levelBasedMessage + " " + activityBasedMessages.random()
-}
+  return timeBasedGreeting + " " + levelBasedMessage + " " + activityBasedMessages.random()
+  }
 
 fun getEncouragingMessage(
   progress: CompanionProgressEntity?,
