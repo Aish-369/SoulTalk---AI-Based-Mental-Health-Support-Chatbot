@@ -42,6 +42,9 @@ import androidx.compose.ui.unit.sp
 import com.example.data.AppContainer
 import com.example.data.api.*
 import com.example.ui.theme.*
+import com.example.ui.components.WolfieCharacter
+import com.example.ui.components.WolfieEmotion
+import com.example.ui.components.WolfieSize
 import androidx.compose.foundation.BorderStroke
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -70,6 +73,19 @@ fun SoulTalkCompanionChatScreen(
   var writtenMessage by remember { mutableStateOf("") }
   var isThinking by remember { mutableStateOf(false) }
   var detectedEmotionState by remember { mutableStateOf("neutral") }
+  var wolfieCurrentEmotion by remember { mutableStateOf(WolfieEmotion.LISTENING) }
+  
+  // Update Wolfie emotion based on detected emotion
+  LaunchedEffect(detectedEmotionState) {
+    wolfieCurrentEmotion = when (detectedEmotionState) {
+      "happy" -> WolfieEmotion.HAPPY
+      "sad" -> WolfieEmotion.SUPPORTIVE
+      "anxious" -> WolfieEmotion.LISTENING
+      "stressed" -> WolfieEmotion.LISTENING
+      "calm" -> WolfieEmotion.MEDITATING
+      else -> WolfieEmotion.LISTENING
+    }
+  }
   
   // Interactive Overlays
   var showBreatheOverlay by remember { mutableStateOf(false) }
@@ -443,7 +459,7 @@ fun SoulTalkCompanionChatScreen(
           }
         }
 
-        // ───────────────────────────────────��──────────
+        // ──────────────────────────────���────��──────────
         // QUICK ACTIONS CARDS
         // ──────────────────────────────────────────────
         Row(

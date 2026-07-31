@@ -33,6 +33,9 @@ import com.example.data.database.UserEntity
 import com.example.data.repository.CompanionRepository
 import com.example.ui.theme.*
 import com.example.ui.theme.WolfieVoiceLines
+import com.example.ui.components.WolfieCharacter
+import com.example.ui.components.WolfieEmotion
+import com.example.ui.components.WolfieSize
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
@@ -510,6 +513,7 @@ fun InteractiveCompanion(
 ) {
   var tapCount by remember { mutableStateOf(0) }
   var lastTapTime by remember { mutableStateOf(0L) }
+  var currentEmotion by remember { mutableStateOf(WolfieEmotion.LISTENING) }
   
   Box(
     modifier = Modifier
@@ -529,12 +533,14 @@ fun InteractiveCompanion(
         if (now - lastTapTime < 500) {
           tapCount++
           if (tapCount >= 2) {
-            onReaction(CompanionReaction.WAVE)
+            onReaction(CompanionReaction.CELEBRATORY)
+            currentEmotion = WolfieEmotion.CELEBRATING
             tapCount = 0
           }
         } else {
           tapCount = 1
           onReaction(CompanionReaction.SMILE)
+          currentEmotion = WolfieEmotion.HAPPY
         }
         lastTapTime = now
       },
@@ -564,60 +570,18 @@ fun InteractiveCompanion(
       )
     }
     
-    // Companion character
+    // Wolfie Character - Premium Integration
     Box(
       modifier = Modifier
-        .scale(breathingScale * evolutionStage.scale)
+        .scale(breathingScale)
         .offset(y = floatOffset.dp),
       contentAlignment = Alignment.Center
     ) {
-      // Main companion body
-      Surface(
-        modifier = Modifier.size(150.dp * evolutionStage.scale),
-        shape = RoundedCornerShape(30.dp),
-        color = PureWhite,
-        shadowElevation = 8.dp
-      ) {
-        Box(
-          contentAlignment = Alignment.Center,
-          modifier = Modifier.fillMaxSize()
-        ) {
-          Column(
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center
-          ) {
-            // Companion face
-            Text(
-              text = "😺",
-              style = MaterialTheme.typography.displayLarge,
-              fontSize = (60 * evolutionStage.scale).sp
-            )
-            
-            // Accessories based on evolution
-            if (evolutionStage.accessories.contains("scarf")) {
-              Text(
-                text = "🧣",
-                style = MaterialTheme.typography.displayLarge,
-                fontSize = (24 * evolutionStage.scale).sp
-              )
-            }
-            if (evolutionStage.accessories.contains("hat")) {
-              Text(
-                text = "🎩",
-                style = MaterialTheme.typography.displayLarge,
-                fontSize = (24 * evolutionStage.scale).sp
-              )
-            }
-            if (evolutionStage.accessories.contains("wings")) {
-              Text(
-                text = "🪽",
-                style = MaterialTheme.typography.displayLarge,
-                fontSize = (24 * evolutionStage.scale).sp
-              )
-            }
-          }
-        }
-      }
+      WolfieCharacter(
+        emotion = currentEmotion,
+        size = WolfieSize.LARGE,
+        modifier = Modifier.size((180).dp)
+      )
     }
     
     // Long press indicator
@@ -626,7 +590,10 @@ fun InteractiveCompanion(
         .fillMaxSize()
         .pointerInput(Unit) {
           detectTapGestures(
-            onLongPress = { onLongPress() }
+            onLongPress = { 
+              onLongPress()
+              currentEmotion = WolfieEmotion.SUPPORTIVE
+            }
           )
         }
     )
