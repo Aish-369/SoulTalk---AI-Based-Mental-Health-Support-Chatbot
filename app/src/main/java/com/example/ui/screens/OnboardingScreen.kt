@@ -38,6 +38,9 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.ui.theme.*
+import com.example.ui.components.WolfieCharacter
+import com.example.ui.components.WolfieEmotion
+import com.example.ui.components.WolfieSize
 import kotlinx.coroutines.launch
 import kotlin.math.cos
 import kotlin.math.sin
@@ -144,7 +147,7 @@ fun SoulTalkOnboardingScreen(onOnboardingFinished: () -> Unit) {
             verticalArrangement = Arrangement.Center
           ) {
             
-            // ILLUSTRATION WORKSPACE
+            // ILLUSTRATION WORKSPACE - Featuring Wolfie
             Box(
               modifier = Modifier
                 .fillMaxWidth()
@@ -152,11 +155,39 @@ fun SoulTalkOnboardingScreen(onOnboardingFinished: () -> Unit) {
                 .padding(bottom = 16.dp),
               contentAlignment = Alignment.Center
             ) {
-              // Custom Native Vector illustrations drawn dynamically at 60 FPS
-              when (pageIndex) {
-                0 -> AnimatedSafeSpaceIllustration(timePhase)
-                1 -> AnimatedEmotionalJourneyIllustration(timePhase)
-                2 -> AnimatedCompanionGrowthIllustration(timePhase)
+              // Wolfie with different emotions for each onboarding page
+              Column(
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.Center,
+                modifier = Modifier.fillMaxSize()
+              ) {
+                // Show Wolfie with emotion matching the page
+                WolfieCharacter(
+                  emotion = when (pageIndex) {
+                    0 -> WolfieEmotion.LISTENING  // Safe space - listening
+                    1 -> WolfieEmotion.THINKING   // Emotional journey - thinking
+                    else -> WolfieEmotion.CELEBRATING  // Growth - celebrating
+                  },
+                  size = WolfieSize.LARGE,
+                  modifier = Modifier.size(150.dp)
+                )
+
+                Spacer(modifier = Modifier.height(24.dp))
+
+                // Subtle decorative text below Wolfie
+                Text(
+                  text = when (pageIndex) {
+                    0 -> "Meet Wolfie"
+                    1 -> "Your Emotional Guide"
+                    else -> "Growing Together"
+                  },
+                  style = MaterialTheme.typography.bodyMedium.copy(
+                    fontFamily = PoppinsFamily,
+                    fontWeight = FontWeight.Medium,
+                    color = SoftSlate,
+                    fontSize = 14.sp
+                  )
+                )
               }
             }
 
