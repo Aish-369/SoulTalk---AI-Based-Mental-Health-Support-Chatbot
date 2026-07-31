@@ -26,6 +26,54 @@ class CompanionRepository(
   val userFlow: Flow<UserEntity?> = companionDao.getUserFlow()
   val progressFlow: Flow<CompanionProgressEntity?> = companionDao.getProgressFlow()
 
+  /**
+   * Initialize Wolfie as the default companion on first app launch.
+   * Wolfie is the premium AI companion and is always used for SoulTalk.
+   */
+  suspend fun initializeWolfie(customName: String? = null): Boolean = withContext(Dispatchers.IO) {
+    try {
+      val companionName = customName ?: "Wolfie"
+      
+      // 1. Persist Wolfie locally to the SQLite table
+      val user = UserEntity(
+        companion_type = "wolfie",
+        companion_name = companionName,
+        personality_type = "wise_supportive_emotionally_intelligent"
+      )
+      companionDao.insertUser(user)
+
+      // 2. Initialize progress
+      val progress = CompanionProgressEntity(
+        user_id = 1,
+        level = 1,
+        xp = 0,
+        stage = "New Friend",
+        updated_at = System.currentTimeMillis()
+      )
+      companionDao.insertProgress(progress)
+
+      // 3. Send initialization to FastAPI
+      try {
+        val accessToken = sharedPrefs.getString("access_token", "mock_dummy_token") ?: "mock_token"
+        val response = apiService.selectCompanion(
+          authHeader = "Bearer $accessToken",
+          request = CompanionSelectionRequest(
+            companion_type = "wolfie",
+            companion_name = companionName
+          )
+        )
+        response.success
+      } catch (e: Exception) {
+        Log.e("CompanionRepository", "FastAPI Wolfie init POST failed or server offline: ${e.localizedMessage}")
+        // Return true because local sqlite is successfully updated
+        true
+      }
+    } catch (dbError: Exception) {
+      Log.e("CompanionRepository", "Room DB Wolfie init error: ${dbError.localizedMessage}")
+      false
+    }
+  }
+
   suspend fun selectCompanion(
     type: String,
     name: String,

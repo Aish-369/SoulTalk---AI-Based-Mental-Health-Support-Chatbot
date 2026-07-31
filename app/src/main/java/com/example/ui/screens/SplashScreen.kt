@@ -36,6 +36,9 @@ import androidx.compose.ui.unit.sp
 import com.example.ui.theme.*
 import com.example.data.AppContainer
 import androidx.compose.ui.platform.LocalContext
+import com.example.ui.components.WolfieCharacter
+import com.example.ui.components.WolfieEmotion
+import com.example.ui.components.WolfieSize
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlin.math.sin
@@ -92,10 +95,16 @@ fun SoulTalkApp() {
       }
       ScreenState.Onboarding -> {
         SoulTalkOnboardingScreen(onOnboardingFinished = {
-          currentScreen = ScreenState.CompanionSelection
+          // Auto-initialize Wolfie and skip companion selection
+          LaunchedEffect(Unit) {
+            repository.initializeWolfie("Wolfie")
+            currentScreen = ScreenState.LoginSignup
+          }
         })
       }
       ScreenState.CompanionSelection -> {
+        // Deprecated: CompanionSelectionScreen is no longer used
+        // Wolfie is automatically initialized after onboarding
         SoulTalkCompanionSelectionScreen(onCompanionSaved = {
           currentScreen = ScreenState.LoginSignup
         })
@@ -440,6 +449,17 @@ fun SoulTalkSplashScreen(onSplashFinished: () -> Unit) {
         }
 
         Spacer(modifier = Modifier.height(24.dp))
+
+        // WOLFIE INTRODUCTION - Appears with app name
+        WolfieCharacter(
+          emotion = WolfieEmotion.HAPPY,
+          size = WolfieSize.MEDIUM,
+          modifier = Modifier
+            .alpha(appNameAlpha)
+            .size(120.dp)
+        )
+
+        Spacer(modifier = Modifier.height(16.dp))
 
         // BRAND NAME (Poppins format, bold, elegant)
         Text(
