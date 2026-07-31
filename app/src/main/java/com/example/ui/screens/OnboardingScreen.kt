@@ -297,75 +297,77 @@ fun SoulTalkOnboardingScreen(onOnboardingFinished: () -> Unit) {
             }
           }
 
-          // NEXT BUTTON OR GET STARTED
+          // NAVIGATION BUTTONS
           val isLastPage = pagerState.currentPage == pages.size - 1
           if (isLastPage) {
-            Button(
+            ElevatedButton(
               onClick = onOnboardingFinished,
-              colors = ButtonDefaults.buttonColors(
+              colors = ButtonDefaults.elevatedButtonColors(
                 containerColor = SageGreen,
                 contentColor = Color.White
               ),
-              shape = RoundedCornerShape(24.dp),
+              shape = RoundedCornerShape(26.dp),
+              elevation = ButtonDefaults.elevatedButtonElevation(
+                defaultElevation = 4.dp,
+                pressedElevation = 8.dp
+              ),
               modifier = Modifier
-                .height(50.dp)
-                .shadow(
-                  elevation = 4.dp,
-                  shape = RoundedCornerShape(24.dp),
-                  ambientColor = SageGreen.copy(alpha = 0.4f),
-                  spotColor = SageGreen.copy(alpha = 0.6f)
-                )
+                .height(52.dp)
                 .testTag("onboarding_get_started_button")
             ) {
               Row(
                 verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.Center
+                horizontalArrangement = Arrangement.spacedBy(8.dp)
               ) {
                 Text(
                   text = "Get Started",
                   fontFamily = PoppinsFamily,
-                  fontWeight = FontWeight.Bold,
-                  fontSize = 15.sp
+                  fontWeight = FontWeight.SemiBold,
+                  fontSize = 15.sp,
+                  letterSpacing = 0.3.sp
                 )
-                Spacer(modifier = Modifier.width(6.dp))
                 Icon(
                   imageVector = Icons.Default.Done,
                   contentDescription = null,
-                  modifier = Modifier.size(16.dp)
+                  modifier = Modifier.size(18.dp)
                 )
               }
             }
           } else {
-            Button(
+            ElevatedButton(
               onClick = {
                 coroutineScope.launch {
                   pagerState.animateScrollToPage(pagerState.currentPage + 1)
                 }
               },
-              colors = ButtonDefaults.buttonColors(
-                containerColor = QuietCharcoal,
+              colors = ButtonDefaults.elevatedButtonColors(
+                containerColor = SageGreen,
                 contentColor = Color.White
               ),
-              shape = RoundedCornerShape(24.dp),
+              shape = RoundedCornerShape(26.dp),
+              elevation = ButtonDefaults.elevatedButtonElevation(
+                defaultElevation = 2.dp,
+                pressedElevation = 6.dp
+              ),
               modifier = Modifier
-                .height(50.dp)
+                .height(52.dp)
                 .testTag("onboarding_next_button")
             ) {
               Row(
                 verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.Center
+                horizontalArrangement = Arrangement.spacedBy(8.dp)
               ) {
                 Text(
                   text = "Next",
                   fontFamily = PoppinsFamily,
                   fontWeight = FontWeight.SemiBold,
-                  fontSize = 15.sp
+                  fontSize = 15.sp,
+                  letterSpacing = 0.3.sp
                 )
-                Spacer(modifier = Modifier.width(6.dp))
                 Icon(
                   imageVector = Icons.AutoMirrored.Filled.ArrowForward,
                   contentDescription = null,
-                  modifier = Modifier.size(16.dp)
+                  modifier = Modifier.size(18.dp)
                 )
               }
             }
