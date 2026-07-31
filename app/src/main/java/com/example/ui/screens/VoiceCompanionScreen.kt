@@ -588,50 +588,58 @@ fun SoulTalkVoiceCompanionScreen(
       horizontalAlignment = Alignment.CenterHorizontally
     ) {
 
-      // TOP BAR: BACK & SANCTUARY ENVIRONMENT SELECTION
+      // TOP APP BAR
       Row(
         modifier = Modifier
           .fillMaxWidth()
-          .padding(horizontal = 20.dp, vertical = 12.dp),
+          .padding(horizontal = 20.dp, vertical = 14.dp),
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
       ) {
-        IconButton(
-          onClick = onBackClicked,
-          modifier = Modifier
-            .background(Color.Black.copy(alpha = 0.25f), CircleShape)
-            .size(42.dp)
-            .testTag("whisper_back_btn")
+        Surface(
+          modifier = Modifier.size(44.dp),
+          shape = CircleShape,
+          color = Color.White.copy(alpha = 0.15f)
         ) {
-          Icon(
-            imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-            contentDescription = "Leave reflection room",
-            tint = Color.White
-          )
+          IconButton(
+            onClick = onBackClicked,
+            modifier = Modifier.testTag("whisper_back_btn")
+          ) {
+            Icon(
+              imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+              contentDescription = "Leave reflection room",
+              tint = Color.White,
+              modifier = Modifier.size(20.dp)
+            )
+          }
         }
 
-        // Ambient Sound Synthesis ON/OFF Switch
-        Row(
-          modifier = Modifier
-            .background(Color.Black.copy(alpha = 0.25f), RoundedCornerShape(20.dp))
-            .clickable { isAmbientSoundPlayOn = !isAmbientSoundPlayOn }
-            .padding(horizontal = 14.dp, vertical = 8.dp),
-          verticalAlignment = Alignment.CenterVertically
+        Surface(
+          modifier = Modifier.clip(RoundedCornerShape(24.dp)),
+          color = Color.Black.copy(alpha = 0.3f),
+          contentColor = Color.White
         ) {
-          Icon(
-            imageVector = if (isAmbientSoundPlayOn) Icons.Default.PlayArrow else Icons.Default.Refresh,
-            contentDescription = "Ambient sound toggle",
-            tint = if (isAmbientSoundPlayOn) Color(0xFFC4FFD1) else Color.White,
-            modifier = Modifier.size(16.dp)
-          )
-          Spacer(modifier = Modifier.width(6.dp))
-          Text(
-            text = if (isAmbientSoundPlayOn) "Hum: ON" else "Hum: OFF",
-            color = Color.White,
-            fontSize = 11.sp,
-            fontWeight = FontWeight.Bold,
-            fontFamily = PoppinsFamily
-          )
+          Row(
+            modifier = Modifier
+              .clickable { isAmbientSoundPlayOn = !isAmbientSoundPlayOn }
+              .padding(horizontal = 16.dp, vertical = 10.dp),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(8.dp)
+          ) {
+            Icon(
+              imageVector = if (isAmbientSoundPlayOn) Icons.Default.VolumeUp else Icons.Default.VolumeOff,
+              contentDescription = "Sound toggle",
+              tint = if (isAmbientSoundPlayOn) Color(0xFFC4FFD1) else Color.White.copy(alpha = 0.7f),
+              modifier = Modifier.size(16.dp)
+            )
+            Text(
+              text = if (isAmbientSoundPlayOn) "Sound ON" else "Sound OFF",
+              color = Color.White,
+              fontSize = 11.sp,
+              fontWeight = FontWeight.SemiBold,
+              fontFamily = PoppinsFamily
+            )
+          }
         }
       }
 
@@ -662,41 +670,35 @@ fun SoulTalkVoiceCompanionScreen(
         )
       }
 
-      // AMBIENT COZY ROOM ENVIRONMENT SLIDER CHOOSER
+      // ENVIRONMENT SELECTOR
       Row(
         modifier = Modifier
           .fillMaxWidth()
-          .padding(vertical = 12.dp, horizontal = 16.dp),
+          .padding(vertical = 16.dp, horizontal = 12.dp),
         horizontalArrangement = Arrangement.Center,
         verticalAlignment = Alignment.CenterVertically
       ) {
         environments.forEach { env ->
           val isSelected = selectedEnv.id == env.id
-          Box(
+          Surface(
             modifier = Modifier
               .padding(horizontal = 6.dp)
-              .clip(RoundedCornerShape(12.dp))
-              .background(
-                if (isSelected) Color.White.copy(alpha = 0.28f)
-                else Color.Black.copy(alpha = 0.25f)
-              )
-              .border(
-                1.dp,
-                if (isSelected) Color.White.copy(alpha = 0.8f) else Color.Transparent,
-                RoundedCornerShape(12.dp)
-              )
-              .clickable { selectedEnv = env }
-              .padding(horizontal = 12.dp, vertical = 8.dp),
-            contentAlignment = Alignment.Center
+              .clip(RoundedCornerShape(14.dp))
+              .clickable { selectedEnv = env },
+            color = if (isSelected) Color.White.copy(alpha = 0.25f) else Color.Black.copy(alpha = 0.3f),
+            shape = RoundedCornerShape(14.dp)
           ) {
-            Row(verticalAlignment = Alignment.CenterVertically) {
+            Row(
+              modifier = Modifier.padding(horizontal = 12.dp, vertical = 8.dp),
+              verticalAlignment = Alignment.CenterVertically,
+              horizontalArrangement = Arrangement.spacedBy(6.dp)
+            ) {
               Text(env.icon, fontSize = 16.sp)
-              Spacer(modifier = Modifier.width(4.dp))
               Text(
                 text = env.name.substringBefore(" "),
-                color = if (isSelected) Color.White else Color.White.copy(alpha = 0.65f),
-                fontSize = 11.sp,
-                fontWeight = FontWeight.Bold,
+                color = if (isSelected) Color.White else Color.White.copy(alpha = 0.7f),
+                fontSize = 10.sp,
+                fontWeight = if (isSelected) FontWeight.SemiBold else FontWeight.Medium,
                 fontFamily = PoppinsFamily
               )
             }
