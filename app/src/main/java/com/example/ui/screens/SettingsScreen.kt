@@ -8,6 +8,7 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -39,13 +40,24 @@ fun SettingsScreen(
     containerColor = CalmingBackground,
     topBar = {
       TopAppBar(
-        title = { Text("Settings", fontWeight = FontWeight.Bold, color = QuietCharcoal) },
+        title = {
+          Text(
+            "Settings",
+            style = MaterialTheme.typography.titleMedium,
+            fontWeight = FontWeight.Bold,
+            color = QuietCharcoal
+          )
+        },
         navigationIcon = {
           IconButton(onClick = onNavigateBack) {
-            Icon(Icons.Default.ArrowBack, "Back", tint = QuietCharcoal)
+            Icon(Icons.Default.ArrowBack, "Back", tint = SageGreen, modifier = Modifier.size(24.dp))
           }
         },
-        colors = TopAppBarDefaults.topAppBarColors(containerColor = CalmingBackground)
+        colors = TopAppBarDefaults.topAppBarColors(
+          containerColor = PureWhite,
+          scrolledContainerColor = PureWhite
+        ),
+        modifier = Modifier.shadow(2.dp)
       )
     }
   ) { paddingValues ->
@@ -53,8 +65,8 @@ fun SettingsScreen(
       modifier = Modifier
         .fillMaxSize()
         .padding(paddingValues)
-        .padding(16.dp),
-      verticalArrangement = Arrangement.spacedBy(16.dp)
+        .padding(20.dp),
+      verticalArrangement = Arrangement.spacedBy(20.dp)
     ) {
       SettingsProfileHeader(user, progress)
       NotificationsControl()
@@ -187,11 +199,17 @@ fun CompanionSettings(user: UserEntity?) {
 fun SettingSection(title: String, content: @Composable ColumnScope.() -> Unit) {
   Card(
     modifier = Modifier.fillMaxWidth(),
-    shape = RoundedCornerShape(16.dp),
-    colors = CardDefaults.cardColors(containerColor = PureWhite)
+    shape = RoundedCornerShape(20.dp),
+    colors = CardDefaults.cardColors(containerColor = PureWhite),
+    elevation = CardDefaults.cardElevation(defaultElevation = 1.dp)
   ) {
-    Column(modifier = Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
-      Text(title, style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.SemiBold, color = QuietCharcoal)
+    Column(modifier = Modifier.padding(20.dp), verticalArrangement = Arrangement.spacedBy(14.dp)) {
+      Text(
+        title,
+        style = MaterialTheme.typography.titleSmall,
+        fontWeight = FontWeight.SemiBold,
+        color = QuietCharcoal
+      )
       content()
     }
   }
@@ -204,8 +222,17 @@ fun SettingToggle(label: String, checked: Boolean, onCheckedChange: (Boolean) ->
     horizontalArrangement = Arrangement.SpaceBetween,
     verticalAlignment = Alignment.CenterVertically
   ) {
-    Text(label, style = MaterialTheme.typography.bodyMedium, color = QuietCharcoal)
-    Switch(checked = checked, onCheckedChange = onCheckedChange, colors = SwitchDefaults.colors(checkedThumbColor = SageGreen))
+    Text(label, style = MaterialTheme.typography.bodyMedium, color = QuietCharcoal, fontWeight = FontWeight.Medium)
+    Switch(
+      checked = checked,
+      onCheckedChange = onCheckedChange,
+      colors = SwitchDefaults.colors(
+        checkedThumbColor = PureWhite,
+        checkedTrackColor = SageGreen,
+        uncheckedThumbColor = PureWhite,
+        uncheckedTrackColor = SoftSlate.copy(alpha = 0.4f)
+      )
+    )
   }
 }
 
