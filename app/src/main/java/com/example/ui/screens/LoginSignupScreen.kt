@@ -261,18 +261,17 @@ var passwordInput by remember { mutableStateOf("") }
         exit = fadeOut()
       ) {
         Column(modifier = Modifier.fillMaxWidth()) {
-          // Google Login primary option with Smile & Glow micro-interactions
-          Button(
+          // Google Login Button
+          ElevatedButton(
             onClick = {
-              if (isAuthenticating) return@Button
+              if (isAuthenticating) return@ElevatedButton
               isAuthenticating = true
               authErrorMessage = ""
-              // Micro-interaction: Companion smiles and glows immediately upon tapping Google LogIn
               companionAnimState = CompanionAnimState.Smile
               hapticFeedback.performHapticFeedback(HapticFeedbackType.LongPress)
 
               coroutineScope.launch {
-                delay(1200) // Beautiful glow duration
+                delay(1200)
                 val success = authRepo.loginWithGoogle("google_mock_id_token")
                 isAuthenticating = false
                 if (success) {
@@ -285,25 +284,31 @@ var passwordInput by remember { mutableStateOf("") }
             },
             modifier = Modifier
               .fillMaxWidth()
-              .height(52.dp)
-              .border(1.dp, QuietCharcoal.copy(alpha = 0.15f), RoundedCornerShape(26.dp))
+              .height(56.dp)
               .testTag("continue_with_google_button"),
-            colors = ButtonDefaults.buttonColors(containerColor = PureWhite, contentColor = QuietCharcoal),
-            shape = RoundedCornerShape(26.dp),
-            elevation = ButtonDefaults.buttonElevation(defaultElevation = 2.dp)
+            colors = ButtonDefaults.elevatedButtonColors(
+              containerColor = PureWhite,
+              contentColor = QuietCharcoal
+            ),
+            shape = RoundedCornerShape(28.dp),
+            elevation = ButtonDefaults.elevatedButtonElevation(
+              defaultElevation = 2.dp,
+              pressedElevation = 6.dp
+            )
           ) {
             Row(
               verticalAlignment = Alignment.CenterVertically,
-              horizontalArrangement = Arrangement.Center
+              horizontalArrangement = Arrangement.Center,
+              modifier = Modifier.fillMaxWidth()
             ) {
-              // Custom structural representation of google logo in clean vector style
               GoogleLogoVectorIcon()
               Spacer(modifier = Modifier.width(12.dp))
               Text(
                 text = "Continue with Google",
                 fontFamily = PoppinsFamily,
-                fontWeight = FontWeight.Bold,
-                fontSize = 15.sp
+                fontWeight = FontWeight.SemiBold,
+                fontSize = 15.sp,
+                letterSpacing = 0.3.sp
               )
             }
           }
@@ -483,12 +488,12 @@ var passwordInput by remember { mutableStateOf("") }
 
           Spacer(modifier = Modifier.height(14.dp))
 
-          // SOLID CREATIVE PRINCIPAL BUTTON (Create Account / Sign In)
-          Button(
+          // AUTH SUBMIT BUTTON
+          ElevatedButton(
             onClick = {
               if (emailInput.isEmpty() || passwordInput.isEmpty()) {
                 authErrorMessage = "Please complete email and password requirements."
-                return@Button
+                return@ElevatedButton
               }
               isAuthenticating = true
               authErrorMessage = ""
@@ -496,7 +501,7 @@ var passwordInput by remember { mutableStateOf("") }
               hapticFeedback.performHapticFeedback(HapticFeedbackType.LongPress)
 
               coroutineScope.launch {
-                delay(1000) // Feel the smooth breathing state change
+                delay(1000)
                 val success = if (isRegisterMode) {
                   authRepo.registerWithPassword(nameInput, emailInput, passwordInput, "en")
                 } else {
@@ -513,30 +518,33 @@ var passwordInput by remember { mutableStateOf("") }
             },
             modifier = Modifier
               .fillMaxWidth()
-              .height(54.dp)
-              .shadow(
-                elevation = 4.dp,
-                shape = RoundedCornerShape(27.dp),
-                ambientColor = SageGreen.copy(alpha = 0.3f),
-                spotColor = SageGreen.copy(alpha = 0.5f)
-              )
+              .height(56.dp)
               .testTag("auth_primary_submit_button"),
-            colors = ButtonDefaults.buttonColors(containerColor = SageGreen, contentColor = PureWhite),
-            shape = RoundedCornerShape(27.dp),
+            colors = ButtonDefaults.elevatedButtonColors(
+              containerColor = SageGreen,
+              contentColor = PureWhite,
+              disabledContainerColor = SageGreen.copy(alpha = 0.4f)
+            ),
+            shape = RoundedCornerShape(28.dp),
+            elevation = ButtonDefaults.elevatedButtonElevation(
+              defaultElevation = 4.dp,
+              pressedElevation = 8.dp
+            ),
             enabled = !isAuthenticating
           ) {
             if (isAuthenticating) {
               CircularProgressIndicator(
-                modifier = Modifier.size(22.dp),
+                modifier = Modifier.size(20.dp),
                 color = PureWhite,
-                strokeWidth = 2.dp
+                strokeWidth = 2.5.dp
               )
             } else {
               Text(
                 text = if (isRegisterMode) "Create Account" else "Sign In",
                 fontFamily = PoppinsFamily,
-                fontWeight = FontWeight.Bold,
-                fontSize = 16.sp
+                fontWeight = FontWeight.SemiBold,
+                fontSize = 16.sp,
+                letterSpacing = 0.3.sp
               )
             }
           }
