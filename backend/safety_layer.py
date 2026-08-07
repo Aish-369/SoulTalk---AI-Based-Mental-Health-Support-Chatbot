@@ -40,20 +40,39 @@ class SafetyLayer:
             ]
         }
         
-        # Supportive responses for each crisis level
+        # Professional help resources — India-specific.
+        # Centralized here deliberately: every other file (main.py's
+        # voice endpoints included) should read from this dict rather
+        # than hardcoding a number, so there's exactly one place to
+        # update if a helpline changes.
+        # Sources verified directly (Aug 2026): telemanas.mohfw.gov.in,
+        # icallhelpline.org, vandrevalafoundation.com
+        self.help_resources = {
+            'crisis_hotline': 'Tele MANAS — 14416 or 1-800-891-4416 (Govt. of India, 24x7, 20+ languages)',
+            'regional': 'iCALL (TISS, Maharashtra) — 9152987821, Mon–Sat 10am–8pm',
+            'alternate_24x7': 'Vandrevala Foundation — 1860-266-2345 / 9999 666 555 (24x7)',
+            'emergency': '112 (India national emergency number)',
+            'international': 'If you are outside India, please contact your local emergency services or crisis hotline'
+        }
+
+        # Supportive responses for each crisis level. Built from
+        # self.help_resources rather than hardcoded, so a resource
+        # update in one place propagates everywhere this text is used.
         self.crisis_responses = {
             CrisisLevel.SEVERE: (
                 "I hear that you're in deep pain, and I want you to know that your life matters deeply. ❤️ "
                 "Please reach out to someone who can help you right now. "
-                "You can call or text the Suicide & Crisis Lifeline at 988 (USA/Canada) "
-                "or contact your local emergency services. "
+                f"You can call {self.help_resources['crisis_hotline']}, "
+                f"or {self.help_resources['alternate_24x7']}. "
+                f"In an immediate emergency, call {self.help_resources['emergency']}. "
                 "There are people who care about you and want to support you through this. "
                 "You are not alone, and there is hope."
             ),
             CrisisLevel.HIGH: (
                 "I can hear how much pain you're in right now, and I want you to know that you matter. 💙 "
                 "This darkness feels overwhelming, but it doesn't have to be permanent. "
-                "Please consider reaching out to a mental health professional, a trusted friend, or a crisis line. "
+                f"Please consider reaching out to {self.help_resources['crisis_hotline']}, "
+                "a mental health professional, or a trusted friend. "
                 "You deserve support and care through this difficult time."
             ),
             CrisisLevel.MEDIUM: (
@@ -68,14 +87,6 @@ class SafetyLayer:
                 "I'm here to listen and support you. "
                 "Would you like to talk more about what's been weighing on you?"
             )
-        }
-        
-        # Professional help resources
-        self.help_resources = {
-            'crisis_hotline': '988 (USA/Canada)',
-            'emergency': '911 (USA/Canada)',
-            'text_line': '741741 (Crisis Text Line)',
-            'international': 'Please contact your local emergency services or crisis hotline'
         }
     
     def detect_crisis(self, text: str) -> Tuple[CrisisLevel, float]:
@@ -131,13 +142,13 @@ class SafetyLayer:
         if crisis_level == CrisisLevel.SEVERE:
             return {
                 'immediate': self.help_resources['crisis_hotline'],
-                'emergency': self.help_resources['emergency'],
-                'text': self.help_resources['text_line']
+                'alternate': self.help_resources['alternate_24x7'],
+                'emergency': self.help_resources['emergency']
             }
         elif crisis_level == CrisisLevel.HIGH:
             return {
                 'crisis_hotline': self.help_resources['crisis_hotline'],
-                'text': self.help_resources['text_line']
+                'regional': self.help_resources['regional']
             }
         else:
             return {

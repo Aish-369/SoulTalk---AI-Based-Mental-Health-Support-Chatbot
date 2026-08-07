@@ -751,7 +751,8 @@ def generate_voice_response(
     if is_crisis_detected(transcript_text):
         reply = (
             "I hear how much pain you are in, and I want you to be completely safe. I am a supportive friend, "
-            "but please connect with professional help. Call or text 988 or reach out to someone you trust."
+            f"but please connect with professional help. Call {safety_layer.help_resources['crisis_hotline']} "
+            "or reach out to someone you trust."
         )
         expression = "slow_breath"
     else:

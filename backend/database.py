@@ -2,7 +2,7 @@ import os
 import logging
 import time
 from typing import Generator
-from sqlalchemy import create_engine, pool
+from sqlalchemy import create_engine, pool, text
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker, Session
 from sqlalchemy.exc import OperationalError, DatabaseError
@@ -57,7 +57,7 @@ def test_connection(max_retries: int = 3) -> bool:
     for attempt in range(max_retries):
         try:
             with engine.connect() as connection:
-                result = connection.execute("SELECT 1")
+                result = connection.execute(text("SELECT 1"))
                 logger.info(f"Database connection test successful (attempt {attempt + 1}/{max_retries})")
                 return True
         except OperationalError as e:
