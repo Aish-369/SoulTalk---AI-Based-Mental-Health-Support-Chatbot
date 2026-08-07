@@ -42,6 +42,9 @@ import androidx.compose.ui.unit.sp
 import com.example.data.AppContainer
 import com.example.data.api.*
 import com.example.ui.theme.*
+import com.example.ui.components.WolfieCharacter
+import com.example.ui.components.WolfieEmotion
+import com.example.ui.components.WolfieSize
 import androidx.compose.foundation.BorderStroke
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -60,16 +63,29 @@ fun SoulTalkCompanionChatScreen(
   var chatMessages by remember { mutableStateOf<List<ChatMessageDto>>(emptyList()) }
   var isLoadingHistory by remember { mutableStateOf(true) }
 
-  // Character metadata custom state (Syncing from FastAPI context)
-  var companionName by remember { mutableStateOf("Mochi") }
-  var companionType by remember { mutableStateOf("mochi_cat") }
-  var personalityType by remember { mutableStateOf("Calm, Friendly, Comforting") }
+  // Character metadata custom state (Wolfie is the sole companion)
+  var companionName by remember { mutableStateOf("Wolfie") }
+  var companionType by remember { mutableStateOf("wolfie") }
+  var personalityType by remember { mutableStateOf("Emotionally Intelligent, Wise, Compassionate") }
   var emotionalTrends by remember { mutableStateOf<List<String>>(listOf("neutral")) }
 
   // UI state variables
   var writtenMessage by remember { mutableStateOf("") }
   var isThinking by remember { mutableStateOf(false) }
   var detectedEmotionState by remember { mutableStateOf("neutral") }
+  var wolfieCurrentEmotion by remember { mutableStateOf(WolfieEmotion.LISTENING) }
+  
+  // Update Wolfie emotion based on detected emotion
+  LaunchedEffect(detectedEmotionState) {
+    wolfieCurrentEmotion = when (detectedEmotionState) {
+      "happy" -> WolfieEmotion.HAPPY
+      "sad" -> WolfieEmotion.SUPPORTIVE
+      "anxious" -> WolfieEmotion.LISTENING
+      "stressed" -> WolfieEmotion.LISTENING
+      "calm" -> WolfieEmotion.MEDITATING
+      else -> WolfieEmotion.LISTENING
+    }
+  }
   
   // Interactive Overlays
   var showBreatheOverlay by remember { mutableStateOf(false) }
@@ -220,7 +236,8 @@ fun SoulTalkCompanionChatScreen(
       TopAppBar(
         colors = TopAppBarDefaults.topAppBarColors(
           containerColor = PureWhite,
-          titleContentColor = QuietCharcoal
+          titleContentColor = QuietCharcoal,
+          scrolledContainerColor = PureWhite
         ),
         navigationIcon = {
           IconButton(
@@ -232,48 +249,39 @@ fun SoulTalkCompanionChatScreen(
           ) {
             Icon(
               imageVector = Icons.AutoMirrored.Default.ArrowBack,
-              contentDescription = "Return to sanctuary Dashboard",
-              tint = QuietCharcoal
+              contentDescription = "Return to Dashboard",
+              tint = SageGreen
             )
           }
         },
         title = {
           Row(
             verticalAlignment = Alignment.CenterVertically,
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.spacedBy(12.dp)
           ) {
-            // Companion online status bubble avatar indicator
-            val animalEmoji = when(companionType) {
-              "mochi_cat" -> "🐱"
-              "star_rabbit" -> "🐰"
-              "cozy_bear" -> "🐻"
-              else -> "🐱"
-            }
-            Box(
-              modifier = Modifier
-                .size(40.dp)
-                .clip(CircleShape)
-                .background(CalmingBackground)
-                .border(1.dp, SoftLavender.copy(alpha = 0.2f), CircleShape),
-              contentAlignment = Alignment.Center
+            Surface(
+              modifier = Modifier.size(40.dp),
+              shape = CircleShape,
+              color = SoftLavender.copy(alpha = 0.15f)
             ) {
-              Text(text = animalEmoji, fontSize = 22.sp)
+              Box(
+                contentAlignment = Alignment.Center,
+                modifier = Modifier.fillMaxSize()
+              ) {
+                Text(text = "🐺", fontSize = 20.sp)
+              }
             }
 
-            Spacer(modifier = Modifier.width(12.dp))
-
-            Column {
+            Column(modifier = Modifier.weight(1f)) {
               Text(
-                text = "$companionName",
+                text = companionName,
                 fontFamily = PoppinsFamily,
-                fontWeight = FontWeight.Bold,
-                fontSize = 16.sp,
+                fontWeight = FontWeight.SemiBold,
+                fontSize = 15.sp,
                 color = QuietCharcoal
               )
-              Row(
-                verticalAlignment = Alignment.CenterVertically
-              ) {
-                // Subtle glowing listening pulse
+              Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(4.dp)) {
                 val listeningPulse = rememberInfiniteTransition("listening").animateFloat(
                   initialValue = 0.3f,
                   targetValue = 1f,
@@ -285,16 +293,14 @@ fun SoulTalkCompanionChatScreen(
                 )
                 Box(
                   modifier = Modifier
-                    .size(8.dp)
+                    .size(6.dp)
                     .clip(CircleShape)
                     .background(SageGreen.copy(alpha = listeningPulse.value))
                 )
-                Spacer(modifier = Modifier.width(6.dp))
                 Text(
                   text = if (isThinking) "Thinking..." else "Listening",
-                  fontFamily = PoppinsFamily,
-                  fontSize = 11.sp,
-                  color = SoftSlate,
+                  fontSize = 10.sp,
+                  color = SageGreen,
                   fontWeight = FontWeight.Medium
                 )
               }
@@ -307,10 +313,11 @@ fun SoulTalkCompanionChatScreen(
               onClick = { stopVoice() },
               modifier = Modifier.testTag("mute_tts_button")
             ) {
-              Text(text = "🔇", fontSize = 18.sp)
+              Icon(Icons.Default.VolumeOff, "Mute", tint = SageGreen, modifier = Modifier.size(20.dp))
             }
           }
-        }
+        },
+        modifier = Modifier.shadow(2.dp)
       )
     },
     modifier = Modifier
@@ -443,7 +450,7 @@ fun SoulTalkCompanionChatScreen(
           }
         }
 
-        // ──────────────────────────────────────────────
+        // ──────────────────────────────���────��──────────
         // QUICK ACTIONS CARDS
         // ──────────────────────────────────────────────
         Row(
@@ -515,26 +522,22 @@ fun SoulTalkCompanionChatScreen(
           }
         }
 
-        // ──────────────────────────────────────────────
         // INPUT CONTROLS SECTION
-        // ──────────────────────────────────────────────
         Card(
           modifier = Modifier
             .fillMaxWidth()
-            .shadow(6.dp, RoundedCornerShape(topStart = 24.dp, topEnd = 24.dp))
-            .background(PureWhite),
-          shape = RoundedCornerShape(topStart = 24.dp, topEnd = 24.dp),
-          colors = CardDefaults.cardColors(containerColor = PureWhite)
+            .shadow(8.dp, RoundedCornerShape(topStart = 28.dp, topEnd = 28.dp)),
+          shape = RoundedCornerShape(topStart = 28.dp, topEnd = 28.dp),
+          colors = CardDefaults.cardColors(containerColor = PureWhite),
+          elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
         ) {
           Row(
             modifier = Modifier
               .fillMaxWidth()
-              .padding(horizontal = 16.dp, vertical = 12.dp),
+              .padding(horizontal = 16.dp, vertical = 14.dp),
             verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(8.dp)
+            horizontalArrangement = Arrangement.spacedBy(10.dp)
           ) {
-            
-            // Text Input field
             OutlinedTextField(
               value = writtenMessage,
               onValueChange = { writtenMessage = it },
@@ -542,8 +545,8 @@ fun SoulTalkCompanionChatScreen(
                 Text(
                   text = "Share what's on your mind...",
                   fontFamily = NotoSansDevanagariFamily,
-                  fontSize = 14.sp,
-                  color = SoftSlate.copy(alpha = 0.7f)
+                  fontSize = 13.sp,
+                  color = SoftSlate.copy(alpha = 0.6f)
                 )
               },
               modifier = Modifier
@@ -554,44 +557,45 @@ fun SoulTalkCompanionChatScreen(
               colors = OutlinedTextFieldDefaults.colors(
                 focusedContainerColor = CalmingBackground,
                 unfocusedContainerColor = CalmingBackground,
-                focusedBorderColor = SoftLavender,
-                unfocusedBorderColor = SoftSlate.copy(alpha = 0.25f)
+                focusedBorderColor = SoftLavender.copy(alpha = 0.7f),
+                unfocusedBorderColor = DividerLight,
+                focusedTextColor = QuietCharcoal,
+                unfocusedTextColor = QuietCharcoal
               ),
               leadingIcon = {
-                // Real-time emotion reflection indicator based on typing
                 val currentSymbol = when {
                   writtenMessage.isEmpty() -> "😊"
                   writtenMessage.lowercase().contains("sad") || writtenMessage.lowercase().contains("blue") -> "😔"
                   writtenMessage.lowercase().contains("stress") || writtenMessage.lowercase().contains("busy") -> "😣"
-                  writtenMessage.lowercase().contains("scared") || writtenMessage.lowercase().contains("worry") -> "😟"
                   else -> "😊"
                 }
                 Box(
-                  modifier = Modifier.padding(start = 6.dp),
+                  modifier = Modifier.padding(start = 8.dp),
                   contentAlignment = Alignment.Center
                 ) {
                   Text(text = currentSymbol, fontSize = 18.sp)
                 }
               },
               keyboardOptions = KeyboardOptions(imeAction = ImeAction.Send),
-              singleLine = true
+              singleLine = true,
+              textStyle = MaterialTheme.typography.bodyMedium
             )
 
             // Voice Button - Microphone system
-            Box(
+            Card(
               modifier = Modifier
-                .size(48.dp)
-                .clip(CircleShape)
-                .background(if (isListeningState) SoftLavender else SoftSkyBlue.copy(alpha = 0.2f))
-                .clickable {
+                .size(52.dp)
+                .clickable(
+                  interactionSource = remember { MutableInteractionSource() },
+                  indication = ripple(),
+                  enabled = true
+                ) {
                   if (isListeningState) {
                     isListeningState = false
-                    // Simulate transcribed dictation speech content
                     val simulatedSpeechTexts = listOf(
                       "I feel so stressed and overwhelmed about tomorrow",
                       "I am really happy and excited because of my friend",
-                      "I have been feeling lonely and sad all day",
-                      "I am anxious about my exam results"
+                      "I have been feeling lonely and sad all day"
                     )
                     submitMessage(simulatedSpeechTexts.random())
                   } else {
@@ -600,43 +604,65 @@ fun SoulTalkCompanionChatScreen(
                   }
                 }
                 .testTag("chat_voice_button"),
-              contentAlignment = Alignment.Center
+              shape = CircleShape,
+              colors = CardDefaults.cardColors(
+                containerColor = if (isListeningState) SoftLavender else SageGreen.copy(alpha = 0.2f)
+              ),
+              elevation = CardDefaults.cardElevation(
+                defaultElevation = if (isListeningState) 4.dp else 2.dp
+              )
             ) {
-              if (isListeningState) {
-                // Pulsing voice animation waves
-                val scaleFactor = 1f + (listeningProgress * 0.3f)
-                Box(
-                  modifier = Modifier
-                    .fillMaxSize()
-                    .scale(scaleFactor)
-                    .clip(CircleShape)
-                    .background(SoftLavender.copy(alpha = 0.4f))
+              Box(
+                modifier = Modifier.fillMaxSize(),
+                contentAlignment = Alignment.Center
+              ) {
+                if (isListeningState) {
+                  val scaleFactor = 1f + (listeningProgress * 0.2f)
+                  Box(
+                    modifier = Modifier
+                      .fillMaxSize()
+                      .scale(scaleFactor)
+                      .clip(CircleShape)
+                      .background(SoftLavender.copy(alpha = 0.3f))
+                  )
+                }
+                Icon(
+                  imageVector = if (isListeningState) Icons.Default.Stop else Icons.Default.Mic,
+                  contentDescription = if (isListeningState) "Stop listening" else "Start listening",
+                  tint = if (isListeningState) PureWhite else SageGreen,
+                  modifier = Modifier.size(24.dp)
                 )
               }
-              Text(
-                text = if (isListeningState) "🛑" else "🎙️",
-                fontSize = 20.sp
-              )
             }
 
             // Submit Button
-            Box(
+            Card(
               modifier = Modifier
-                .size(48.dp)
-                .clip(CircleShape)
-                .background(if (writtenMessage.isNotEmpty()) SoftLavender else SoftSlate.copy(alpha = 0.15f))
-                .clickable(enabled = writtenMessage.isNotEmpty()) {
-                  submitMessage(writtenMessage)
+                .size(52.dp)
+                .clickable(
+                  interactionSource = remember { MutableInteractionSource() },
+                  indication = ripple(),
+                  enabled = writtenMessage.isNotEmpty()
+                ) {
+                  if (writtenMessage.isNotEmpty()) submitMessage(writtenMessage)
                 }
                 .testTag("companion_chat_send_button"),
-              contentAlignment = Alignment.Center
-            ) {
-              Icon(
-                imageVector = Icons.AutoMirrored.Default.Send,
-                contentDescription = "Send message",
-                tint = if (writtenMessage.isNotEmpty()) Color.White else SoftSlate,
-                modifier = Modifier.size(20.dp)
+              shape = CircleShape,
+              colors = CardDefaults.cardColors(
+                containerColor = if (writtenMessage.isNotEmpty()) SoftLavender else DisabledGray.copy(alpha = 0.2f)
+              ),
+              elevation = CardDefaults.cardElevation(
+                defaultElevation = if (writtenMessage.isNotEmpty()) 4.dp else 0.dp
               )
+            ) {
+              Box(contentAlignment = Alignment.Center, modifier = Modifier.fillMaxSize()) {
+                Icon(
+                  imageVector = Icons.AutoMirrored.Default.Send,
+                  contentDescription = "Send message",
+                  tint = if (writtenMessage.isNotEmpty()) PureWhite else SoftSlate.copy(alpha = 0.5f),
+                  modifier = Modifier.size(22.dp)
+                )
+              }
             }
           }
         }

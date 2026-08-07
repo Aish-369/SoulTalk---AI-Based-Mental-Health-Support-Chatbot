@@ -5,6 +5,7 @@ import androidx.compose.animation.core.*
 import androidx.compose.foundation.*
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.*
+import androidx.compose.ui.draw.shadow
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
@@ -90,15 +91,40 @@ fun LifeTimelineScreen(
     containerColor = CalmingBackground,
     topBar = {
       TopAppBar(
-        title = { },
-        navigationIcon = { IconButton(onClick = onNavigateBack) { Icon(Icons.Default.ArrowBack, "Back", tint = QuietCharcoal) } },
-        actions = {
-          Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp), modifier = Modifier.padding(end = 8.dp)) {
-            Text("📖", style = MaterialTheme.typography.titleMedium)
-            Switch(checked = storyMode, onCheckedChange = { storyMode = it }, colors = SwitchDefaults.colors(checkedThumbColor = SageGreen, uncheckedThumbColor = SoftSlate))
+        title = {
+          Text(
+            text = "Journal",
+            style = MaterialTheme.typography.titleMedium,
+            fontWeight = FontWeight.Bold,
+            color = QuietCharcoal
+          )
+        },
+        navigationIcon = {
+          IconButton(onClick = onNavigateBack) {
+            Icon(Icons.Default.ArrowBack, "Back", tint = SageGreen, modifier = Modifier.size(24.dp))
           }
         },
-        colors = TopAppBarDefaults.topAppBarColors(containerColor = CalmingBackground)
+        actions = {
+          Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(12.dp), modifier = Modifier.padding(end = 12.dp)) {
+            Icon(Icons.Default.BookmarksOutlined, contentDescription = null, tint = SageGreen, modifier = Modifier.size(20.dp))
+            Switch(
+              checked = storyMode,
+              onCheckedChange = { storyMode = it },
+              modifier = Modifier.scale(0.8f),
+              colors = SwitchDefaults.colors(
+                checkedThumbColor = PureWhite,
+                checkedTrackColor = SageGreen,
+                uncheckedThumbColor = PureWhite,
+                uncheckedTrackColor = SoftSlate.copy(alpha = 0.4f)
+              )
+            )
+          }
+        },
+        colors = TopAppBarDefaults.topAppBarColors(
+          containerColor = PureWhite,
+          scrolledContainerColor = PureWhite
+        ),
+        modifier = Modifier.shadow(2.dp)
       )
     }
   ) { paddingValues ->
@@ -125,15 +151,41 @@ fun LifeTimelineScreen(
 
 @Composable
 fun TimelineHeader(user: UserEntity?) {
-  val companionName = user?.companion_name ?: "Mochi"
-  Column(modifier = Modifier.fillMaxWidth().padding(vertical = 16.dp)) {
-    Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically) {
-      Column {
-        Text("Your Journey", style = MaterialTheme.typography.displayLarge, fontWeight = FontWeight.Bold, color = QuietCharcoal, fontSize = 32.sp)
-        Text("Every moment shaped you.", style = MaterialTheme.typography.bodyLarge, color = QuietCharcoal.copy(alpha = 0.7f), fontWeight = FontWeight.Medium)
+  val companionName = user?.companion_name ?: "Wolfie"
+  Card(
+    modifier = Modifier.fillMaxWidth(),
+    shape = RoundedCornerShape(24.dp),
+    colors = CardDefaults.cardColors(containerColor = PureWhite),
+    elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
+  ) {
+    Row(
+      modifier = Modifier.fillMaxWidth().padding(24.dp),
+      horizontalArrangement = Arrangement.SpaceBetween,
+      verticalAlignment = Alignment.CenterVertically
+    ) {
+      Column(modifier = Modifier.weight(1f)) {
+        Text(
+          "Your Journey",
+          style = MaterialTheme.typography.headlineMedium,
+          fontWeight = FontWeight.Bold,
+          color = QuietCharcoal
+        )
+        Spacer(modifier = Modifier.height(4.dp))
+        Text(
+          "Every moment shaped you.",
+          style = MaterialTheme.typography.bodyMedium,
+          color = SageGreen,
+          fontWeight = FontWeight.Medium
+        )
       }
-      Surface(modifier = Modifier.size(60.dp), shape = CircleShape, color = SageGlow) {
-        Box(contentAlignment = Alignment.Center, modifier = Modifier.fillMaxSize()) { Text("😺", style = MaterialTheme.typography.displayLarge, fontSize = 32.sp) }
+      Surface(
+        modifier = Modifier.size(56.dp),
+        shape = CircleShape,
+        color = SoftLavender.copy(alpha = 0.2f)
+      ) {
+        Box(contentAlignment = Alignment.Center, modifier = Modifier.fillMaxSize()) {
+          Text("🐺", fontSize = 28.sp)
+        }
       }
     }
   }
@@ -201,29 +253,72 @@ fun TimelineEventCard(event: TimelineEvent, storyMode: Boolean, onClick: () -> U
     TimelineEventType.ACHIEVEMENT -> Color(0xFFFFD54F)
   }
   
-  Card(modifier = Modifier.fillMaxWidth().pointerInput(Unit) { detectTapGestures(onTap = { onClick() }, onLongPress = { onLongPress() }) }, shape = RoundedCornerShape(20.dp), colors = CardDefaults.cardColors(containerColor = PureWhite), elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)) {
-    Row(modifier = Modifier.fillMaxWidth().padding(20.dp), horizontalArrangement = Arrangement.spacedBy(16.dp)) {
+  Card(
+    modifier = Modifier
+      .fillMaxWidth()
+      .pointerInput(Unit) { detectTapGestures(onTap = { onClick() }, onLongPress = { onLongPress() }) },
+    shape = RoundedCornerShape(20.dp),
+    colors = CardDefaults.cardColors(containerColor = PureWhite),
+    elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
+    border = BorderStroke(1.dp, eventColor.copy(alpha = 0.2f))
+  ) {
+    Row(modifier = Modifier.fillMaxWidth().padding(24.dp), horizontalArrangement = Arrangement.spacedBy(16.dp)) {
       Column(horizontalAlignment = Alignment.CenterHorizontally, modifier = Modifier.width(60.dp)) {
-        Surface(modifier = Modifier.size(50.dp), shape = CircleShape, color = eventColor.copy(alpha = 0.3f), border = androidx.compose.foundation.BorderStroke(2.dp, eventColor)) {
-          Box(contentAlignment = Alignment.Center, modifier = Modifier.fillMaxSize()) { Text(eventIcon, style = MaterialTheme.typography.headlineMedium) }
+        Surface(
+          modifier = Modifier.size(48.dp),
+          shape = CircleShape,
+          color = eventColor.copy(alpha = 0.15f),
+          border = BorderStroke(1.5.dp, eventColor.copy(alpha = 0.4f))
+        ) {
+          Box(contentAlignment = Alignment.Center, modifier = Modifier.fillMaxSize()) {
+            Text(eventIcon, style = MaterialTheme.typography.headlineMedium, fontSize = 24.sp)
+          }
         }
-        Spacer(modifier = Modifier.height(8.dp))
-        Box(modifier = Modifier.width(2.dp).height(40.dp).background(eventColor.copy(alpha = 0.3f)))
+        Spacer(modifier = Modifier.height(12.dp))
+        Box(modifier = Modifier.width(2.dp).height(36.dp).background(eventColor.copy(alpha = 0.25f)))
       }
-      Column(modifier = Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(8.dp)) {
+      Column(modifier = Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(10.dp)) {
         Row(horizontalArrangement = Arrangement.spacedBy(8.dp), verticalAlignment = Alignment.CenterVertically) {
-          Text("📅 ${dateFormat.format(Date(event.date))}", style = MaterialTheme.typography.bodySmall, fontWeight = FontWeight.SemiBold, color = QuietCharcoal.copy(alpha = 0.7f))
-          Text(timeFormat.format(Date(event.date)), style = MaterialTheme.typography.bodySmall, color = QuietCharcoal.copy(alpha = 0.5f))
+          Text(
+            dateFormat.format(Date(event.date)),
+            style = MaterialTheme.typography.labelSmall,
+            fontWeight = FontWeight.SemiBold,
+            color = eventColor
+          )
+          Text(
+            timeFormat.format(Date(event.date)),
+            style = MaterialTheme.typography.labelSmall,
+            color = QuietCharcoal.copy(alpha = 0.5f)
+          )
         }
         Row(horizontalArrangement = Arrangement.spacedBy(8.dp), verticalAlignment = Alignment.CenterVertically) {
-          Text(event.emotionIcon, style = MaterialTheme.typography.titleLarge)
-          Text(event.title, style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.SemiBold, color = QuietCharcoal)
+          Text(event.emotionIcon, fontSize = 18.sp)
+          Text(
+            event.title,
+            style = MaterialTheme.typography.titleSmall,
+            fontWeight = FontWeight.SemiBold,
+            color = QuietCharcoal
+          )
         }
-        Text(if (storyMode) event.aiReflection else event.description, style = MaterialTheme.typography.bodyMedium, color = QuietCharcoal, lineHeight = 22.sp)
-        Surface(shape = RoundedCornerShape(12.dp), color = eventColor.copy(alpha = 0.2f)) {
-          Row(modifier = Modifier.padding(horizontal = 12.dp, vertical = 6.dp), horizontalArrangement = Arrangement.spacedBy(6.dp), verticalAlignment = Alignment.CenterVertically) {
-            Text("☀️", style = MaterialTheme.typography.bodySmall)
-            Text(event.emotionalWeather, style = MaterialTheme.typography.bodySmall, fontWeight = FontWeight.Medium, color = QuietCharcoal)
+        Text(
+          if (storyMode) event.aiReflection else event.description,
+          style = MaterialTheme.typography.bodySmall,
+          color = QuietCharcoal,
+          lineHeight = 20.sp
+        )
+        Surface(shape = RoundedCornerShape(10.dp), color = eventColor.copy(alpha = 0.12f)) {
+          Row(
+            modifier = Modifier.padding(horizontal = 12.dp, vertical = 6.dp),
+            horizontalArrangement = Arrangement.spacedBy(6.dp),
+            verticalAlignment = Alignment.CenterVertically
+          ) {
+            Text("☀️", fontSize = 12.sp)
+            Text(
+              event.emotionalWeather,
+              style = MaterialTheme.typography.labelSmall,
+              fontWeight = FontWeight.Medium,
+              color = QuietCharcoal
+            )
           }
         }
       }
@@ -268,20 +363,57 @@ fun EventDetailModal(event: TimelineEvent, onDismiss: () -> Unit) {
 
 @Composable
 fun GrowthSummaryCard(summary: String, onClose: () -> Unit) {
-  Card(modifier = Modifier.fillMaxWidth(), shape = RoundedCornerShape(24.dp), colors = CardDefaults.cardColors(containerColor = SageGreen.copy(alpha = 0.1f)), border = androidx.compose.foundation.BorderStroke(2.dp, SageGreen)) {
-    Column(modifier = Modifier.padding(24.dp), verticalArrangement = Arrangement.spacedBy(16.dp)) {
+  Card(
+    modifier = Modifier.fillMaxWidth(),
+    shape = RoundedCornerShape(24.dp),
+    colors = CardDefaults.cardColors(containerColor = SageGreen.copy(alpha = 0.08f)),
+    border = BorderStroke(1.5.dp, SageGreen.copy(alpha = 0.4f)),
+    elevation = CardDefaults.cardElevation(defaultElevation = 3.dp)
+  ) {
+    Column(modifier = Modifier.padding(28.dp), verticalArrangement = Arrangement.spacedBy(20.dp)) {
       Row(horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically) {
-        Row(horizontalArrangement = Arrangement.spacedBy(8.dp), verticalAlignment = Alignment.CenterVertically) {
-          Text("🌟", style = MaterialTheme.typography.headlineMedium)
-          Text("Your Growth Summary", style = MaterialTheme.typography.headlineMedium, fontWeight = FontWeight.Bold, color = QuietCharcoal)
+        Row(horizontalArrangement = Arrangement.spacedBy(12.dp), verticalAlignment = Alignment.CenterVertically) {
+          Surface(
+            modifier = Modifier.size(40.dp),
+            shape = CircleShape,
+            color = SageGreen.copy(alpha = 0.2f)
+          ) {
+            Box(contentAlignment = Alignment.Center, modifier = Modifier.fillMaxSize()) {
+              Text("🌟", fontSize = 20.sp)
+            }
+          }
+          Text(
+            "Your Growth Summary",
+            style = MaterialTheme.typography.titleMedium,
+            fontWeight = FontWeight.SemiBold,
+            color = QuietCharcoal
+          )
         }
-        IconButton(onClick = onClose) { Icon(Icons.Default.Close, "Close", tint = QuietCharcoal) }
+        IconButton(onClick = onClose) {
+          Icon(Icons.Default.Close, "Close", tint = SageGreen, modifier = Modifier.size(20.dp))
+        }
       }
-      Text(summary, style = MaterialTheme.typography.bodyLarge, color = QuietCharcoal, lineHeight = 26.sp)
-      Surface(shape = RoundedCornerShape(12.dp), color = PureWhite) {
-        Row(modifier = Modifier.padding(16.dp), horizontalArrangement = Arrangement.spacedBy(12.dp), verticalAlignment = Alignment.CenterVertically) {
-          Text("😺", style = MaterialTheme.typography.headlineMedium)
-          Text("I'm so proud of how far you've come on this journey.", style = MaterialTheme.typography.bodyMedium, fontWeight = FontWeight.Medium, color = QuietCharcoal)
+      Text(
+        summary,
+        style = MaterialTheme.typography.bodyMedium,
+        color = QuietCharcoal,
+        lineHeight = 24.sp,
+        letterSpacing = 0.3.sp
+      )
+      Surface(shape = RoundedCornerShape(16.dp), color = SoftLavender.copy(alpha = 0.15f)) {
+        Row(
+          modifier = Modifier.padding(18.dp),
+          horizontalArrangement = Arrangement.spacedBy(14.dp),
+          verticalAlignment = Alignment.CenterVertically
+        ) {
+          Text("🐺", fontSize = 24.sp)
+          Text(
+            "I'm so proud of how far you've come on this journey.",
+            style = MaterialTheme.typography.bodySmall,
+            fontWeight = FontWeight.Medium,
+            color = QuietCharcoal,
+            lineHeight = 20.sp
+          )
         }
       }
     }

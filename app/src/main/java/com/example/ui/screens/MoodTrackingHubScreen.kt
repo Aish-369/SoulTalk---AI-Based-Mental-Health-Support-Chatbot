@@ -168,235 +168,251 @@ fun SoulTalkMoodTrackingHubScreen(
             verticalArrangement = Arrangement.spacedBy(24.dp),
             contentPadding = PaddingValues(bottom = 32.dp)
           ) {
-            // BACK BUTTON & TOP TITLE ZONE
+            // TOP APP BAR
             item {
               Row(
                 modifier = Modifier
                   .fillMaxWidth()
-                  .padding(top = 16.dp),
-                verticalAlignment = Alignment.CenterVertically
+                  .padding(top = 12.dp, bottom = 8.dp),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.SpaceBetween
               ) {
                 IconButton(
                   onClick = onBackClicked,
-                  modifier = Modifier
-                    .size(44.dp)
-                    .background(PureWhite, CircleShape)
-                    .border(1.dp, SoftSlate.copy(alpha = 0.15f), CircleShape)
-                    .testTag("back_button")
+                  modifier = Modifier.testTag("back_button")
                 ) {
                   Icon(
                     imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                     contentDescription = "Back to dashboard",
-                    tint = QuietCharcoal
+                    tint = SageGreen,
+                    modifier = Modifier.size(24.dp)
                   )
                 }
+                Text(
+                  text = "Mood Tracking",
+                  style = MaterialTheme.typography.titleMedium,
+                  fontWeight = FontWeight.Bold,
+                  color = QuietCharcoal,
+                  modifier = Modifier.weight(1f).padding(start = 12.dp)
+                )
               }
             }
 
-            // TOP HEADER SECTION (Cute companion + Premium storytelling title)
+            // HEADER CARD WITH COMPANION
             item {
-              Row(
-                modifier = Modifier
-                  .fillMaxWidth()
-                  .background(
-                    brush = Brush.linearGradient(
-                      listOf(SkyGlow, SageGlow)
-                    ),
-                    shape = RoundedCornerShape(28.dp)
-                  )
-                  .padding(20.dp),
-                verticalAlignment = Alignment.CenterVertically
+              Card(
+                modifier = Modifier.fillMaxWidth(),
+                shape = RoundedCornerShape(28.dp),
+                colors = CardDefaults.cardColors(containerColor = PureWhite),
+                elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
               ) {
-                Column(modifier = Modifier.weight(1.3f)) {
-                  Text(
-                    text = "Your Emotional Journey",
-                    fontFamily = PoppinsFamily,
-                    fontWeight = FontWeight.Bold,
-                    fontSize = 22.sp,
-                    color = QuietCharcoal
-                  )
-                  Spacer(modifier = Modifier.height(4.dp))
-                  Text(
-                    text = "Every feeling tells a story.",
-                    fontFamily = NotoSansDevanagariFamily,
-                    fontSize = 14.sp,
-                    color = SoftSlate
-                  )
-                  
-                  if (state.companion != null) {
-                    Spacer(modifier = Modifier.height(12.dp))
+                Row(
+                  modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(24.dp),
+                  verticalAlignment = Alignment.CenterVertically,
+                  horizontalArrangement = Arrangement.spacedBy(20.dp)
+                ) {
+                  Column(modifier = Modifier.weight(1f)) {
+                    Text(
+                      text = "Your Emotional Journey",
+                      style = MaterialTheme.typography.headlineSmall,
+                      fontWeight = FontWeight.Bold,
+                      color = QuietCharcoal
+                    )
+                    Spacer(modifier = Modifier.height(6.dp))
+                    Text(
+                      text = "Every feeling tells a story.",
+                      style = MaterialTheme.typography.bodyMedium,
+                      color = SageGreen,
+                      fontWeight = FontWeight.Medium
+                    )
+                    if (state.companion != null) {
+                      Spacer(modifier = Modifier.height(12.dp))
+                      Surface(
+                        shape = RoundedCornerShape(10.dp),
+                        color = SageGreen.copy(alpha = 0.1f)
+                      ) {
+                        Text(
+                          text = "Companion: ${state.companion.companion_name}",
+                          style = MaterialTheme.typography.labelSmall,
+                          fontWeight = FontWeight.SemiBold,
+                          color = SageGreen,
+                          modifier = Modifier.padding(horizontal = 12.dp, vertical = 6.dp)
+                        )
+                      }
+                    }
+                  }
+
+                  Surface(
+                    modifier = Modifier.size(92.dp),
+                    shape = CircleShape,
+                    color = SoftLavender.copy(alpha = 0.15f)
+                  ) {
                     Box(
-                      modifier = Modifier
-                        .background(PureWhite.copy(alpha = 0.8f), RoundedCornerShape(12.dp))
-                        .padding(horizontal = 10.dp, vertical = 6.dp)
+                      contentAlignment = Alignment.Center,
+                      modifier = Modifier.fillMaxSize()
                     ) {
-                      Text(
-                        text = "Companion: ${state.companion.companion_name}",
-                        fontFamily = PoppinsFamily,
-                        fontWeight = FontWeight.Medium,
-                        fontSize = 11.sp,
-                        color = QuietCharcoal
+                      AnimatedCompanionDrawCanvas(
+                        companionId = state.companion?.companion_type ?: "mochi_cat",
+                        time = ticker,
+                        isDetailView = false
                       )
                     }
                   }
                 }
-
-                // Smooth animated 3D companion PROCEDURAL DRAWING CANVAS
-                Box(
-                  modifier = Modifier
-                    .size(100.dp)
-                    .clip(CircleShape)
-                    .background(PureWhite.copy(alpha = 0.6f))
-                    .padding(4.dp),
-                  contentAlignment = Alignment.Center
-                ) {
-                  AnimatedCompanionDrawCanvas(
-                    companionId = state.companion?.companion_type ?: "mochi_cat",
-                    time = ticker,
-                    isDetailView = false
-                  )
-                }
               }
             }
 
-            // SECTION 1: TODAY'S MOOD SUMMARY
+            // TODAY'S STATUS CARD
             item {
               val latestLog = state.logs.firstOrNull()
               Text(
                 text = "Today's Status",
-                fontFamily = PoppinsFamily,
-                fontWeight = FontWeight.Bold,
-                fontSize = 18.sp,
+                style = MaterialTheme.typography.titleMedium,
+                fontWeight = FontWeight.SemiBold,
                 color = QuietCharcoal,
-                modifier = Modifier.padding(bottom = 2.dp)
+                modifier = Modifier.padding(bottom = 8.dp)
               )
               Card(
                 shape = RoundedCornerShape(24.dp),
                 colors = CardDefaults.cardColors(containerColor = PureWhite),
-                border = BorderStroke(1.dp, SoftSlate.copy(alpha = 0.1f)),
+                border = BorderStroke(1.dp, SoftSlate.copy(alpha = 0.15f)),
+                elevation = CardDefaults.cardElevation(defaultElevation = 1.dp),
                 modifier = Modifier.fillMaxWidth()
               ) {
-                Column(modifier = Modifier.padding(20.dp)) {
+                Column(modifier = Modifier.padding(24.dp)) {
                   if (latestLog != null) {
-                    Row(verticalAlignment = Alignment.CenterVertically) {
-                      Box(
-                        modifier = Modifier
-                          .size(54.dp)
-                          .background(SageGlow, CircleShape),
-                        contentAlignment = Alignment.Center
+                    Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(16.dp)) {
+                      Surface(
+                        modifier = Modifier.size(56.dp),
+                        shape = CircleShape,
+                        color = SageGlow.copy(alpha = 0.5f)
                       ) {
-                        Text(text = latestLog.mood, fontSize = 28.sp)
+                        Box(
+                          contentAlignment = Alignment.Center,
+                          modifier = Modifier.fillMaxSize()
+                        ) {
+                          Text(text = latestLog.mood, fontSize = 28.sp)
+                        }
                       }
-                      Spacer(modifier = Modifier.width(16.dp))
-                      Column {
+                      Column(modifier = Modifier.weight(1f)) {
                         Text(
-                          text = "Current Mood: ${latestLog.emotion}",
-                          fontFamily = PoppinsFamily,
+                          text = "Current Mood",
+                          style = MaterialTheme.typography.labelSmall,
+                          color = SageGreen,
+                          fontWeight = FontWeight.SemiBold
+                        )
+                        Text(
+                          text = latestLog.emotion,
+                          style = MaterialTheme.typography.titleMedium,
                           fontWeight = FontWeight.Bold,
-                          fontSize = 16.sp,
                           color = QuietCharcoal
                         )
-                        Row(verticalAlignment = Alignment.CenterVertically) {
+                        Spacer(modifier = Modifier.height(6.dp))
+                        Surface(
+                          shape = RoundedCornerShape(8.dp),
+                          color = SageGreen.copy(alpha = 0.12f)
+                        ) {
                           Text(
-                            text = "Weather: ",
-                            fontFamily = NotoSansDevanagariFamily,
-                            fontSize = 12.sp,
-                            color = SoftSlate
-                          )
-                          Text(
-                            text = state.insights.most_common_emotion.replace("Calm", "🌈 Recovery Mode").replace("Happy", "☀️ Sunny Mind").replace("Anxious", "⛈️ Stormy Moment").replace("Stressed", "☁️ Cloudy Day"),
-                            fontFamily = PoppinsFamily,
+                            text = state.insights.most_common_emotion.replace("Calm", "🌈 Recovery").replace("Happy", "☀️ Sunny").replace("Anxious", "⛈️ Stormy").replace("Stressed", "☁️ Cloudy"),
+                            style = MaterialTheme.typography.labelSmall,
                             fontWeight = FontWeight.Medium,
-                            fontSize = 12.sp,
-                            color = SageGreen
+                            color = SageGreen,
+                            modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp)
                           )
                         }
                       }
                     }
-                    Spacer(modifier = Modifier.height(14.dp))
+                    Spacer(modifier = Modifier.height(16.dp))
+                    Divider(color = DividerLight, thickness = 1.dp)
+                    Spacer(modifier = Modifier.height(16.dp))
                     Text(
-                      text = "Companion Reaction:",
-                      fontFamily = PoppinsFamily,
+                      text = "Wolfie's Reflection",
+                      style = MaterialTheme.typography.labelSmall,
                       fontWeight = FontWeight.SemiBold,
-                      fontSize = 12.sp,
-                      color = QuietCharcoal.copy(alpha = 0.7f)
+                      color = SoftLavender
                     )
+                    Spacer(modifier = Modifier.height(8.dp))
                     Text(
                       text = when (latestLog.emotion.lowercase()) {
-                        "happy" -> "Mochi is leaping around with joy for you! Keep spreading this wonderful light!"
-                        "calm" -> "Mochi curls up happily on your lap, purring softly. This is such a lovely ground state."
-                        "sad" -> "Mochi sits right beside you quietly, putting a warm paw on yours. Rain is normal, friend."
-                        "stressed" -> "Mochi begins doing a micro-breathing wave to help unload your heavy chest."
+                        "happy" -> "I'm leaping around with joy for you! Keep spreading this wonderful light!"
+                        "calm" -> "I curl up happily beside you. This is such a lovely ground state."
+                        "sad" -> "I sit right beside you quietly, putting a warm paw on yours. It's okay."
+                        "stressed" -> "I begin a micro-breathing wave to help unload your heavy chest."
                         "anxious" -> "We can float this worry cloud out together. Breathe with me..."
-                        else -> "Your companion is looking at you lovingly, absolute support is always with you here."
+                        else -> "I'm looking at you lovingly. Absolute support is always here."
                       },
-                      fontFamily = NotoSansDevanagariFamily,
-                      fontSize = 13.sp,
+                      style = MaterialTheme.typography.bodySmall,
                       color = QuietCharcoal,
-                      lineHeight = 18.sp,
-                      modifier = Modifier.padding(top = 2.dp)
+                      lineHeight = 20.sp
                     )
                   } else {
-                    Text(
-                      text = "You haven't checked in with yourself yet today.",
-                      fontFamily = NotoSansDevanagariFamily,
-                      fontSize = 13.sp,
-                      color = SoftSlate,
-                      textAlign = TextAlign.Center,
-                      modifier = Modifier.fillMaxWidth()
-                    )
+                    Box(
+                      modifier = Modifier
+                        .fillMaxWidth()
+                        .height(100.dp),
+                      contentAlignment = Alignment.Center
+                    ) {
+                      Text(
+                        text = "You haven't checked in with yourself yet today.",
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = SoftSlate,
+                        textAlign = TextAlign.Center
+                      )
+                    }
                   }
                 }
               }
             }
 
-            // SECTION 2: MOOD CALENDAR (Monthly interactive calendar)
+            // MOOD CALENDAR
             item {
               Text(
                 text = "Mood Calendar",
-                fontFamily = PoppinsFamily,
-                fontWeight = FontWeight.Bold,
-                fontSize = 18.sp,
-                color = QuietCharcoal
+                style = MaterialTheme.typography.titleMedium,
+                fontWeight = FontWeight.SemiBold,
+                color = QuietCharcoal,
+                modifier = Modifier.padding(bottom = 8.dp)
               )
-              Spacer(modifier = Modifier.height(8.dp))
               Card(
                 shape = RoundedCornerShape(24.dp),
                 colors = CardDefaults.cardColors(containerColor = PureWhite),
-                border = BorderStroke(1.dp, SoftSlate.copy(alpha = 0.1f)),
+                border = BorderStroke(1.dp, SoftSlate.copy(alpha = 0.15f)),
+                elevation = CardDefaults.cardElevation(defaultElevation = 1.dp),
                 modifier = Modifier.fillMaxWidth()
               ) {
-                Column(modifier = Modifier.padding(16.dp)) {
-                  // Calendar Header
+                Column(modifier = Modifier.padding(20.dp)) {
                   val calNow = Calendar.getInstance()
                   val sdfMonth = SimpleDateFormat("MMMM yyyy", Locale.getDefault())
                   Text(
                     text = sdfMonth.format(calNow.time),
-                    fontFamily = PoppinsFamily,
+                    style = MaterialTheme.typography.titleSmall,
                     fontWeight = FontWeight.Bold,
-                    fontSize = 16.sp,
                     color = QuietCharcoal,
                     textAlign = TextAlign.Center,
                     modifier = Modifier
                       .fillMaxWidth()
-                      .padding(bottom = 12.dp)
+                      .padding(bottom = 16.dp)
                   )
 
-                  // Days of Week labels
-                  Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
+                  Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.spacedBy(4.dp)
+                  ) {
                     val daysLabels = listOf("S", "M", "T", "W", "T", "F", "S")
                     daysLabels.forEach { label ->
                       Text(
                         text = label,
-                        fontFamily = PoppinsFamily,
+                        style = MaterialTheme.typography.labelSmall,
                         fontWeight = FontWeight.SemiBold,
-                        fontSize = 12.sp,
                         color = SoftSlate,
                         textAlign = TextAlign.Center,
                         modifier = Modifier.weight(1f)
                       )
                     }
                   }
+                  Spacer(modifier = Modifier.height(12.dp))
                   
                   Spacer(modifier = Modifier.height(6.dp))
 

@@ -13,6 +13,9 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
+import androidx.compose.material3.BorderStroke
+import androidx.compose.material3.ripple
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -32,6 +35,10 @@ import com.example.data.database.CompanionProgressEntity
 import com.example.data.database.UserEntity
 import com.example.data.repository.CompanionRepository
 import com.example.ui.theme.*
+import com.example.ui.theme.WolfieVoiceLines
+import com.example.ui.components.WolfieCharacter
+import com.example.ui.components.WolfieEmotion
+import com.example.ui.components.WolfieSize
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
@@ -164,7 +171,7 @@ fun CompanionHomeScreen(
   var showLevelUpCelebration by remember { mutableStateOf(false) }
   var showThemeSelector by remember { mutableStateOf(false) }
   var showCustomization by remember { mutableStateOf(false) }
-  var companionMessage by remember { mutableStateOf("I'm so happy to see you! Let's grow together today.") }
+  var companionMessage by remember { mutableStateOf("Welcome back. I'm so glad to see you. What's on your mind today?") }
   var companionReaction by remember { mutableStateOf<CompanionReaction?>(null) }
   
   // Load data
@@ -226,36 +233,45 @@ fun CompanionHomeScreen(
   val evolutionStage = evolutionStages.find { it.level == currentLevel } ?: evolutionStages[0]
   
   Scaffold(
-    containerColor = selectedTheme.backgroundColor,
+    containerColor = CalmingBackground,
     topBar = {
       TopAppBar(
-        title = { },
+        title = {
+          Text(
+            text = "SoulTalk",
+            style = MaterialTheme.typography.titleMedium,
+            fontWeight = FontWeight.Bold,
+            color = QuietCharcoal
+          )
+        },
         navigationIcon = {
           IconButton(onClick = { showThemeSelector = true }) {
-            Icon(Icons.Default.Palette, "Change Theme", tint = QuietCharcoal)
+            Icon(Icons.Default.Palette, "Change Theme", tint = SageGreen)
           }
         },
         actions = {
           IconButton(onClick = { showCustomization = true }) {
-            Icon(Icons.Default.Face, "Customize", tint = QuietCharcoal)
+            Icon(Icons.Default.Settings, "Customize", tint = SageGreen)
           }
           IconButton(onClick = onNavigateToChat) {
-            Icon(Icons.Default.Chat, "Chat", tint = QuietCharcoal)
+            Icon(Icons.Default.Chat, "Chat", tint = SageGreen)
           }
         },
         colors = TopAppBarDefaults.topAppBarColors(
-          containerColor = selectedTheme.backgroundColor
-        )
+          containerColor = PureWhite,
+          scrolledContainerColor = PureWhite
+        ),
+        modifier = Modifier.shadow(2.dp)
       )
     }
   ) { paddingValues ->
-    Box(modifier = Modifier.fillMaxSize()) {
+    Box(modifier = Modifier.fillMaxSize().background(CalmingBackground)) {
       LazyColumn(
         modifier = Modifier
           .fillMaxSize()
           .padding(paddingValues),
-        contentPadding = PaddingValues(16.dp),
-        verticalArrangement = Arrangement.spacedBy(16.dp)
+        contentPadding = PaddingValues(20.dp),
+        verticalArrangement = Arrangement.spacedBy(20.dp)
       ) {
         // Header with companion info
         item {
@@ -387,100 +403,73 @@ fun CompanionHeader(
   val currentLevel = progress?.level ?: 1
   val currentXp = progress?.xp ?: 0
   
-  Column(
-    modifier = Modifier
-      .fillMaxWidth()
-      .clip(RoundedCornerShape(20.dp))
-      .background(
-        Brush.horizontalGradient(
-          colors = listOf(
-            selectedTheme.primaryColor,
-            selectedTheme.secondaryColor.copy(alpha = 0.3f)
-          )
-        )
-      )
-      .padding(20.dp)
+  Card(
+    modifier = Modifier.fillMaxWidth(),
+    shape = RoundedCornerShape(24.dp),
+    colors = CardDefaults.cardColors(containerColor = PureWhite),
+    elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
   ) {
-    Row(
-      modifier = Modifier.fillMaxWidth(),
-      horizontalArrangement = Arrangement.SpaceBetween,
-      verticalAlignment = Alignment.CenterVertically
-    ) {
-      Column {
-        Text(
-          text = "🐱 $companionName",
-          style = MaterialTheme.typography.headlineMedium,
-          fontWeight = FontWeight.Bold,
-          color = QuietCharcoal
-        )
-        Text(
-          text = "Level $currentLevel",
-          style = MaterialTheme.typography.titleLarge,
-          fontWeight = FontWeight.SemiBold,
-          color = QuietCharcoal.copy(alpha = 0.8f)
-        )
-      }
-      Surface(
-        modifier = Modifier.size(60.dp),
-        shape = CircleShape,
-        color = PureWhite
+    Column(modifier = Modifier.padding(24.dp)) {
+      Row(
+        modifier = Modifier.fillMaxWidth(),
+        horizontalArrangement = Arrangement.SpaceBetween,
+        verticalAlignment = Alignment.CenterVertically
       ) {
-        Box(
-          contentAlignment = Alignment.Center,
-          modifier = Modifier.fillMaxSize()
-        ) {
+        Column(modifier = Modifier.weight(1f)) {
           Text(
-            text = "✨",
-            style = MaterialTheme.typography.displayLarge,
-            fontSize = 32.sp
+            text = companionName,
+            style = MaterialTheme.typography.headlineSmall,
+            fontWeight = FontWeight.Bold,
+            color = QuietCharcoal
+          )
+          Spacer(modifier = Modifier.height(4.dp))
+          Text(
+            text = "Level $currentLevel • ${evolutionStages.find { it.level == currentLevel }?.description ?: "Growing"}",
+            style = MaterialTheme.typography.labelMedium,
+            color = SageGreen,
+            fontWeight = FontWeight.Medium
           )
         }
+        Surface(
+          modifier = Modifier.size(56.dp),
+          shape = CircleShape,
+          color = SoftLavender.copy(alpha = 0.2f)
+        ) {
+          Box(contentAlignment = Alignment.Center, modifier = Modifier.fillMaxSize()) {
+            Text(text = "✨", fontSize = 28.sp)
+          }
+        }
       }
-    }
-    
-    Spacer(modifier = Modifier.height(12.dp))
-    
-    Row(
-      modifier = Modifier.fillMaxWidth(),
-      horizontalArrangement = Arrangement.SpaceBetween,
-      verticalAlignment = Alignment.CenterVertically
-    ) {
-      Text(
-        text = "$currentXp XP",
-        style = MaterialTheme.typography.bodyMedium,
-        fontWeight = FontWeight.Medium,
-        color = QuietCharcoal
-      )
-      Text(
-        text = "$xpNeededForNextLevel XP to next level",
-        style = MaterialTheme.typography.bodySmall,
-        color = QuietCharcoal.copy(alpha = 0.7f)
-      )
-    }
-    
-    Spacer(modifier = Modifier.height(8.dp))
-    
-    // Animated Progress Bar
-    Box(
-      modifier = Modifier
-        .fillMaxWidth()
-        .height(12.dp)
-        .clip(RoundedCornerShape(6.dp))
-        .background(PureWhite.copy(alpha = 0.5f))
-    ) {
-      Box(
+      
+      Spacer(modifier = Modifier.height(20.dp))
+      
+      Row(
+        modifier = Modifier.fillMaxWidth(),
+        horizontalArrangement = Arrangement.SpaceBetween,
+        verticalAlignment = Alignment.CenterVertically
+      ) {
+        Column {
+          Text(text = "$currentXp XP", style = MaterialTheme.typography.bodySmall, color = SoftSlate)
+          Text(text = "of $xpNeededForNextLevel", style = MaterialTheme.typography.labelSmall, color = SoftSlate)
+        }
+        Text(
+          text = "${(xpProgress * 100).toInt()}%",
+          style = MaterialTheme.typography.labelLarge,
+          fontWeight = FontWeight.Bold,
+          color = SageGreen
+        )
+      }
+      
+      Spacer(modifier = Modifier.height(12.dp))
+      
+      LinearProgressIndicator(
+        progress = xpProgress.coerceIn(0f, 1f),
         modifier = Modifier
-          .fillMaxWidth(xpProgress.coerceIn(0f, 1f))
-          .fillMaxHeight()
-          .clip(RoundedCornerShape(6.dp))
-          .background(
-            Brush.horizontalGradient(
-              colors = listOf(
-                SageGreen,
-                SoftSkyBlue
-              )
-            )
-          )
+          .fillMaxWidth()
+          .height(8.dp)
+          .clip(RoundedCornerShape(4.dp)),
+        color = SageGreen,
+        trackColor = SurfaceVariantLight
       )
     }
   }
@@ -509,135 +498,104 @@ fun InteractiveCompanion(
 ) {
   var tapCount by remember { mutableStateOf(0) }
   var lastTapTime by remember { mutableStateOf(0L) }
+  var currentEmotion by remember { mutableStateOf(WolfieEmotion.LISTENING) }
   
-  Box(
+  Card(
     modifier = Modifier
       .fillMaxWidth()
-      .height(300.dp)
-      .clip(RoundedCornerShape(24.dp))
-      .background(
-        Brush.verticalGradient(
-          colors = listOf(
-            selectedTheme.primaryColor,
-            selectedTheme.secondaryColor.copy(alpha = 0.2f)
-          )
-        )
-      )
+      .height(340.dp)
       .clickable {
         val now = System.currentTimeMillis()
         if (now - lastTapTime < 500) {
           tapCount++
           if (tapCount >= 2) {
-            onReaction(CompanionReaction.WAVE)
+            onReaction(CompanionReaction.CELEBRATORY)
+            currentEmotion = WolfieEmotion.CELEBRATING
             tapCount = 0
           }
         } else {
           tapCount = 1
           onReaction(CompanionReaction.SMILE)
+          currentEmotion = WolfieEmotion.HAPPY
         }
         lastTapTime = now
       },
-    contentAlignment = Alignment.Center
+    shape = RoundedCornerShape(28.dp),
+    colors = CardDefaults.cardColors(
+      containerColor = Brush.verticalGradient(
+        colors = listOf(SoftLavender.copy(alpha = 0.15f), SoftSkyBlue.copy(alpha = 0.1f))
+      ).let { PureWhite }
+    ),
+    elevation = CardDefaults.cardElevation(defaultElevation = 3.dp)
   ) {
-    // Ambient particles
-    repeat(5) { index ->
-      val particleOffset by rememberInfiniteTransition(label = "particle_$index").animateFloat(
-        initialValue = 0f,
-        targetValue = 360f,
-        animationSpec = infiniteRepeatable(
-          animation = tween(4000 + index * 500, easing = LinearEasing),
-          repeatMode = RepeatMode.Restart
-        ),
-        label = "particle_$index"
-      )
-      
-      Box(
-        modifier = Modifier
-          .offset(
-            x = (100 * kotlin.math.cos(kotlin.math.Math.toRadians(particleOffset.toDouble()))).dp,
-            y = (100 * kotlin.math.sin(kotlin.math.Math.toRadians(particleOffset.toDouble()))).dp
-          )
-          .size(8.dp)
-          .clip(CircleShape)
-          .background(selectedTheme.secondaryColor.copy(alpha = 0.4f))
-      )
-    }
-    
-    // Companion character
-    Box(
-      modifier = Modifier
-        .scale(breathingScale * evolutionStage.scale)
-        .offset(y = floatOffset.dp),
-      contentAlignment = Alignment.Center
-    ) {
-      // Main companion body
-      Surface(
-        modifier = Modifier.size(150.dp * evolutionStage.scale),
-        shape = RoundedCornerShape(30.dp),
-        color = PureWhite,
-        shadowElevation = 8.dp
-      ) {
-        Box(
-          contentAlignment = Alignment.Center,
-          modifier = Modifier.fillMaxSize()
-        ) {
-          Column(
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center
-          ) {
-            // Companion face
-            Text(
-              text = "😺",
-              style = MaterialTheme.typography.displayLarge,
-              fontSize = (60 * evolutionStage.scale).sp
-            )
-            
-            // Accessories based on evolution
-            if (evolutionStage.accessories.contains("scarf")) {
-              Text(
-                text = "🧣",
-                style = MaterialTheme.typography.displayLarge,
-                fontSize = (24 * evolutionStage.scale).sp
-              )
-            }
-            if (evolutionStage.accessories.contains("hat")) {
-              Text(
-                text = "🎩",
-                style = MaterialTheme.typography.displayLarge,
-                fontSize = (24 * evolutionStage.scale).sp
-              )
-            }
-            if (evolutionStage.accessories.contains("wings")) {
-              Text(
-                text = "🪽",
-                style = MaterialTheme.typography.displayLarge,
-                fontSize = (24 * evolutionStage.scale).sp
-              )
-            }
-          }
-        }
-      }
-    }
-    
-    // Long press indicator
     Box(
       modifier = Modifier
         .fillMaxSize()
-        .pointerInput(Unit) {
-          detectTapGestures(
-            onLongPress = { onLongPress() }
+        .background(
+          Brush.verticalGradient(
+            colors = listOf(SoftLavender.copy(alpha = 0.12f), SoftSkyBlue.copy(alpha = 0.08f))
           )
-        }
-    )
-    
-    // Interaction hint
-    Text(
-      text = "Tap • Double-tap • Long press",
-      style = MaterialTheme.typography.bodySmall,
-      color = QuietCharcoal.copy(alpha = 0.6f),
-      modifier = Modifier.align(Alignment.BottomCenter)
-        .padding(bottom = 12.dp)
-    )
+        ),
+      contentAlignment = Alignment.Center
+    ) {
+      // Animated background glow
+      repeat(3) { index ->
+        val glowAlpha by rememberInfiniteTransition(label = "glow_$index").animateFloat(
+          initialValue = 0.1f,
+          targetValue = 0.3f,
+          animationSpec = infiniteRepeatable(
+            animation = tween(3000 + index * 500, easing = EaseInOutSine),
+            repeatMode = RepeatMode.Reverse
+          ),
+          label = "glow_$index"
+        )
+        Box(
+          modifier = Modifier
+            .size(280.dp - (index * 40.dp))
+            .clip(CircleShape)
+            .background(SageGreen.copy(alpha = glowAlpha * 0.3f))
+        )
+      }
+      
+      // Wolfie Character with breathing animation
+      Box(
+        modifier = Modifier
+          .scale(breathingScale)
+          .offset(y = floatOffset.dp)
+          .zIndex(1f),
+        contentAlignment = Alignment.Center
+      ) {
+        WolfieCharacter(
+          emotion = currentEmotion,
+          size = WolfieSize.LARGE,
+          modifier = Modifier.size(200.dp)
+        )
+      }
+      
+      // Gesture handler
+      Box(
+        modifier = Modifier
+          .fillMaxSize()
+          .pointerInput(Unit) {
+            detectTapGestures(
+              onLongPress = {
+                onLongPress()
+                currentEmotion = WolfieEmotion.SUPPORTIVE
+              }
+            )
+          }
+      )
+      
+      // Bottom interaction hint
+      Text(
+        text = "Tap to interact • Long press for support",
+        style = MaterialTheme.typography.labelSmall,
+        color = QuietCharcoal.copy(alpha = 0.5f),
+        modifier = Modifier
+          .align(Alignment.BottomCenter)
+          .padding(16.dp)
+      )
+    }
   }
 }
 
@@ -649,37 +607,40 @@ fun CompanionDialogueCard(
   Card(
     modifier = Modifier.fillMaxWidth(),
     shape = RoundedCornerShape(20.dp),
-    colors = CardDefaults.cardColors(
-      containerColor = PureWhite
-    ),
-    elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
+    colors = CardDefaults.cardColors(containerColor = SoftPeach.copy(alpha = 0.4f)),
+    border = BorderStroke(1.dp, SoftPeach.copy(alpha = 0.6f)),
+    elevation = CardDefaults.cardElevation(defaultElevation = 1.dp)
   ) {
-    Column(
-      modifier = Modifier.padding(20.dp)
-    ) {
+    Column(modifier = Modifier.padding(24.dp)) {
       Row(
         verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.spacedBy(8.dp)
+        horizontalArrangement = Arrangement.spacedBy(12.dp)
       ) {
+        Surface(
+          modifier = Modifier.size(32.dp),
+          shape = CircleShape,
+          color = WarningOrange.copy(alpha = 0.2f)
+        ) {
+          Box(contentAlignment = Alignment.Center, modifier = Modifier.fillMaxSize()) {
+            Text(text = "💬", fontSize = 16.sp)
+          }
+        }
         Text(
-          text = "💬",
-          style = MaterialTheme.typography.titleLarge
-        )
-        Text(
-          text = "Companion Message",
-          style = MaterialTheme.typography.titleMedium,
+          text = "From Wolfie",
+          style = MaterialTheme.typography.labelMedium,
           fontWeight = FontWeight.SemiBold,
           color = QuietCharcoal
         )
       }
       
-      Spacer(modifier = Modifier.height(12.dp))
+      Spacer(modifier = Modifier.height(16.dp))
       
       Text(
         text = message,
-        style = MaterialTheme.typography.bodyLarge,
+        style = MaterialTheme.typography.bodyMedium,
         color = QuietCharcoal,
-        lineHeight = 24.sp
+        lineHeight = 22.sp,
+        letterSpacing = 0.3.sp
       )
     }
   }
@@ -848,15 +809,20 @@ fun QuickActionButton(
   modifier: Modifier = Modifier
 ) {
   Card(
-    modifier = modifier.aspectRatio(1f),
-    shape = RoundedCornerShape(16.dp),
-    colors = CardDefaults.cardColors(
-      containerColor = color.copy(alpha = 0.2f)
-    ),
-    onClick = onClick
+    modifier = modifier
+      .aspectRatio(1f)
+      .clickable(
+        interactionSource = remember { MutableInteractionSource() },
+        indication = ripple(),
+        onClick = onClick
+      ),
+    shape = RoundedCornerShape(20.dp),
+    colors = CardDefaults.cardColors(containerColor = color.copy(alpha = 0.15f)),
+    border = BorderStroke(1.5.dp, color.copy(alpha = 0.3f)),
+    elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
   ) {
     Column(
-      modifier = Modifier.fillMaxSize(),
+      modifier = Modifier.fillMaxSize().padding(12.dp),
       horizontalAlignment = Alignment.CenterHorizontally,
       verticalArrangement = Arrangement.Center
     ) {
@@ -864,14 +830,15 @@ fun QuickActionButton(
         imageVector = icon,
         contentDescription = label,
         tint = color,
-        modifier = Modifier.size(32.dp)
+        modifier = Modifier.size(36.dp)
       )
-      Spacer(modifier = Modifier.height(8.dp))
+      Spacer(modifier = Modifier.height(10.dp))
       Text(
         text = label,
-        style = MaterialTheme.typography.bodySmall,
-        fontWeight = FontWeight.Medium,
-        color = QuietCharcoal
+        style = MaterialTheme.typography.labelSmall,
+        fontWeight = FontWeight.SemiBold,
+        color = QuietCharcoal,
+        textAlign = TextAlign.Center
       )
     }
   }
@@ -1806,34 +1773,34 @@ fun generateCustomizationItems(currentLevel: Int): List<CustomizationItem> {
 fun updateCompanionDialogue(
   progress: CompanionProgressEntity?,
   user: UserEntity?
-): String? {
+  ): String? {
   val level = progress?.level ?: 1
   val hour = Calendar.getInstance().get(Calendar.HOUR_OF_DAY)
   
+  // Use Wolfie's personality-driven voice lines
   val timeBasedGreeting = when (hour) {
-    in 5..11 -> "Good morning! "
-    in 12..16 -> "Good afternoon! "
-    in 17..20 -> "Good evening! "
-    else -> "Good night! "
+    in 5..11 -> WolfieVoiceLines.morningGreetings.random()
+    in 17..20 -> WolfieVoiceLines.eveningGreetings.random()
+    else -> "I'm here with you, always."
   }
   
   val levelBasedMessage = when {
     level >= 5 -> "You've become such a wise soul. I'm honored to be your guardian."
     level >= 3 -> "I've noticed how much you've grown. Your emotional awareness is beautiful."
-    level >= 2 -> "We're building something special together. Keep going!"
-    else -> "Every step counts, and I'm here with you for each one."
+    level >= 2 -> "We're building something special together. Keep growing."
+    else -> "Every moment of reflection matters. You're already becoming more aware."
   }
   
   val activityBasedMessages = listOf(
-    "I noticed you've been journaling more. Your thoughts are becoming clearer.",
-    "You handled a difficult week really well. I'm proud of you.",
-    "Let's keep growing together. The journey matters more than the destination.",
-    "Your consistency inspires me. Let's maintain this momentum.",
-    "Remember to be kind to yourself today. You deserve it."
+    "I see how you're taking care of yourself. That takes real courage.",
+    "Your willingness to feel deeply shows real strength.",
+    "The work you're doing here is important. I believe in you.",
+    "You're showing up for yourself. That matters more than you know.",
+    "Remember to be kind to yourself today. You deserve that compassion."
   )
   
-  return timeBasedGreeting + levelBasedMessage + " " + activityBasedMessages.random()
-}
+  return timeBasedGreeting + " " + levelBasedMessage + " " + activityBasedMessages.random()
+  }
 
 fun getEncouragingMessage(
   progress: CompanionProgressEntity?,

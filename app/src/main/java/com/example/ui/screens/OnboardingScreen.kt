@@ -38,6 +38,9 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.ui.theme.*
+import com.example.ui.components.WolfieCharacter
+import com.example.ui.components.WolfieEmotion
+import com.example.ui.components.WolfieSize
 import kotlinx.coroutines.launch
 import kotlin.math.cos
 import kotlin.math.sin
@@ -144,7 +147,7 @@ fun SoulTalkOnboardingScreen(onOnboardingFinished: () -> Unit) {
             verticalArrangement = Arrangement.Center
           ) {
             
-            // ILLUSTRATION WORKSPACE
+            // ILLUSTRATION WORKSPACE - Featuring Wolfie
             Box(
               modifier = Modifier
                 .fillMaxWidth()
@@ -152,11 +155,39 @@ fun SoulTalkOnboardingScreen(onOnboardingFinished: () -> Unit) {
                 .padding(bottom = 16.dp),
               contentAlignment = Alignment.Center
             ) {
-              // Custom Native Vector illustrations drawn dynamically at 60 FPS
-              when (pageIndex) {
-                0 -> AnimatedSafeSpaceIllustration(timePhase)
-                1 -> AnimatedEmotionalJourneyIllustration(timePhase)
-                2 -> AnimatedCompanionGrowthIllustration(timePhase)
+              // Wolfie with different emotions for each onboarding page
+              Column(
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.Center,
+                modifier = Modifier.fillMaxSize()
+              ) {
+                // Show Wolfie with emotion matching the page
+                WolfieCharacter(
+                  emotion = when (pageIndex) {
+                    0 -> WolfieEmotion.LISTENING  // Safe space - listening
+                    1 -> WolfieEmotion.THINKING   // Emotional journey - thinking
+                    else -> WolfieEmotion.CELEBRATING  // Growth - celebrating
+                  },
+                  size = WolfieSize.LARGE,
+                  modifier = Modifier.size(150.dp)
+                )
+
+                Spacer(modifier = Modifier.height(24.dp))
+
+                // Subtle decorative text below Wolfie
+                Text(
+                  text = when (pageIndex) {
+                    0 -> "Meet Wolfie"
+                    1 -> "Your Emotional Guide"
+                    else -> "Growing Together"
+                  },
+                  style = MaterialTheme.typography.bodyMedium.copy(
+                    fontFamily = PoppinsFamily,
+                    fontWeight = FontWeight.Medium,
+                    color = SoftSlate,
+                    fontSize = 14.sp
+                  )
+                )
               }
             }
 
@@ -266,75 +297,77 @@ fun SoulTalkOnboardingScreen(onOnboardingFinished: () -> Unit) {
             }
           }
 
-          // NEXT BUTTON OR GET STARTED
+          // NAVIGATION BUTTONS
           val isLastPage = pagerState.currentPage == pages.size - 1
           if (isLastPage) {
-            Button(
+            ElevatedButton(
               onClick = onOnboardingFinished,
-              colors = ButtonDefaults.buttonColors(
+              colors = ButtonDefaults.elevatedButtonColors(
                 containerColor = SageGreen,
                 contentColor = Color.White
               ),
-              shape = RoundedCornerShape(24.dp),
+              shape = RoundedCornerShape(26.dp),
+              elevation = ButtonDefaults.elevatedButtonElevation(
+                defaultElevation = 4.dp,
+                pressedElevation = 8.dp
+              ),
               modifier = Modifier
-                .height(50.dp)
-                .shadow(
-                  elevation = 4.dp,
-                  shape = RoundedCornerShape(24.dp),
-                  ambientColor = SageGreen.copy(alpha = 0.4f),
-                  spotColor = SageGreen.copy(alpha = 0.6f)
-                )
+                .height(52.dp)
                 .testTag("onboarding_get_started_button")
             ) {
               Row(
                 verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.Center
+                horizontalArrangement = Arrangement.spacedBy(8.dp)
               ) {
                 Text(
                   text = "Get Started",
                   fontFamily = PoppinsFamily,
-                  fontWeight = FontWeight.Bold,
-                  fontSize = 15.sp
+                  fontWeight = FontWeight.SemiBold,
+                  fontSize = 15.sp,
+                  letterSpacing = 0.3.sp
                 )
-                Spacer(modifier = Modifier.width(6.dp))
                 Icon(
                   imageVector = Icons.Default.Done,
                   contentDescription = null,
-                  modifier = Modifier.size(16.dp)
+                  modifier = Modifier.size(18.dp)
                 )
               }
             }
           } else {
-            Button(
+            ElevatedButton(
               onClick = {
                 coroutineScope.launch {
                   pagerState.animateScrollToPage(pagerState.currentPage + 1)
                 }
               },
-              colors = ButtonDefaults.buttonColors(
-                containerColor = QuietCharcoal,
+              colors = ButtonDefaults.elevatedButtonColors(
+                containerColor = SageGreen,
                 contentColor = Color.White
               ),
-              shape = RoundedCornerShape(24.dp),
+              shape = RoundedCornerShape(26.dp),
+              elevation = ButtonDefaults.elevatedButtonElevation(
+                defaultElevation = 2.dp,
+                pressedElevation = 6.dp
+              ),
               modifier = Modifier
-                .height(50.dp)
+                .height(52.dp)
                 .testTag("onboarding_next_button")
             ) {
               Row(
                 verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.Center
+                horizontalArrangement = Arrangement.spacedBy(8.dp)
               ) {
                 Text(
                   text = "Next",
                   fontFamily = PoppinsFamily,
                   fontWeight = FontWeight.SemiBold,
-                  fontSize = 15.sp
+                  fontSize = 15.sp,
+                  letterSpacing = 0.3.sp
                 )
-                Spacer(modifier = Modifier.width(6.dp))
                 Icon(
                   imageVector = Icons.AutoMirrored.Filled.ArrowForward,
                   contentDescription = null,
-                  modifier = Modifier.size(16.dp)
+                  modifier = Modifier.size(18.dp)
                 )
               }
             }

@@ -468,42 +468,48 @@ fun SoulTalkFirstMoodCheckInScreen(onCheckInCompleted: () -> Unit) {
 
       Spacer(modifier = Modifier.height(35.dp))
 
-      // FIXED ACTION CONTINUE TRIGGER BUTTON
-      Button(
+      // CONTINUE BUTTON
+      ElevatedButton(
         onClick = {
-          if (selectedMood == null) return@Button
+          if (selectedMood == null) return@ElevatedButton
           hapticFeedback.performHapticFeedback(HapticFeedbackType.LongPress)
           isSyncingMoodToServer = true
 
           coroutineScope.launch {
-            // Fire API database save with fallback
             val apiResponse = companionRepo.logMood(selectedMood!!.moodKey, journalNotes)
             computedWeatherResult = apiResponse.weather
             isSyncingMoodToServer = false
             isShowingResultOverlay = true
 
-            delay(3500) // Beautiful full-screen animation transition reveal
+            delay(3500)
             onCheckInCompleted()
           }
         },
         enabled = selectedMood != null && !isSyncingMoodToServer,
         modifier = Modifier
           .fillMaxWidth()
-          .height(54.dp)
+          .height(56.dp)
           .testTag("continue_journey_button"),
-        colors = ButtonDefaults.buttonColors(
+        colors = ButtonDefaults.elevatedButtonColors(
           containerColor = selectedMood?.accentColor ?: SageGreen,
           contentColor = PureWhite,
-          disabledContainerColor = SageGreen.copy(alpha = 0.3f)
+          disabledContainerColor = SoftSlate.copy(alpha = 0.25f),
+          disabledContentColor = SoftSlate.copy(alpha = 0.5f)
         ),
-        shape = RoundedCornerShape(27.dp)
+        elevation = ButtonDefaults.elevatedButtonElevation(
+          defaultElevation = 4.dp,
+          pressedElevation = 8.dp,
+          disabledElevation = 0.dp
+        ),
+        shape = RoundedCornerShape(28.dp)
       ) {
-        val buttonText = if (isSyncingMoodToServer) "Analyzing Atmosphere..." else "Continue Journey"
+        val buttonText = if (isSyncingMoodToServer) "Analyzing..." else "Continue Journey"
         Text(
           text = buttonText,
           fontFamily = PoppinsFamily,
-          fontWeight = FontWeight.Bold,
-          fontSize = 16.sp
+          fontWeight = FontWeight.SemiBold,
+          fontSize = 16.sp,
+          letterSpacing = 0.5.sp
         )
       }
 
